@@ -1,123 +1,134 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
-[RequireComponent(typeof(AudioSource))]
-public class MicrophoneManager : MonoBehaviour {
-    float threshold = 0;
-    float frequency = 0.0f;
+namespace UniMic {
+    [RequireComponent(typeof(AudioSource))]
+    public class MicrophoneManager : MonoBehaviour {
+        bool m_IsRecording;
+        string m_Key;
 
-    public int recordingSampleRate = 44100;
-    public string microphoneDeviceName;
-    public FFTWindow fftWindow;
+        // Unity Microphone params
+        int m_SampleRate = 16000;
+        int m_BufferDurationSec = 1;
 
-    List<string> namesOfMicsAvailable = new List<string>();
-    int spectrumSampleRate = 8192;
-    AudioSource audioSource;
+        // Internal concat params
+        float[] m_AudioFrameBuffer;
+        int m_FrameDurationMs = 20;
 
-    void Awake() {
-        audioSource = GetComponent<AudioSource>();
+        // Unity Components
+        AudioClip m_AudioClip;
+        AudioSource m_AudioSource;
 
-        // get all available microphones
-        foreach (string device in Microphone.devices) {
-            if (microphoneDeviceName == null) {
-                //set default mic to first mic found.
-                microphoneDeviceName = device;
+        // Devices
+        int m_CurrMicDeviceIndex;
+        List<string> m_MicDevices = new List<string>();
+
+        // Events
+        public delegate void StringEvent(string param);
+        public delegate void FloatArrayEvent(float[] param);
+
+        public event StringEvent onRecordingStart;
+        public event FloatArrayEvent onAudioFrameCollected;
+        public event StringEvent onRecordingStop;
+
+        public static MicrophoneManager Create(int sampleRate, int bufferDurationSec, int frameDurationMs) {
+            GameObject cted = new GameObject("MicrophoneManager");
+            DontDestroyOnLoad(cted);
+            MicrophoneManager instance = cted.AddComponent<MicrophoneManager>();
+
+            instance.m_SampleRate = sampleRate;
+            instance.m_BufferDurationSec = bufferDurationSec;
+            instance.m_FrameDurationMs = frameDurationMs;
+
+            return instance;
+        }
+
+        void Awake() {
+            m_AudioSource = GetComponent<AudioSource>();
+            m_AudioFrameBuffer = new float[m_SampleRate / 1000 * m_FrameDurationMs];
+
+            foreach (var device in Microphone.devices)
+                m_MicDevices.Add(device);
+
+            m_CurrMicDeviceIndex = 0;
+        }
+
+        public void StartRecording (string key) {
+            Microphone.End(GetCurrMicDevice()); 
+            if (!Microphone.IsRecording(GetCurrMicDevice())) {
+                m_Key = key;
+                m_IsRecording = true;
+
+                m_AudioClip = Microphone.Start(GetCurrMicDevice(), true, m_BufferDurationSec, m_SampleRate);
+                m_AudioSource.clip = m_AudioClip;
+                m_AudioSource.loop = true;
+                m_AudioSource.volume = 1;
+                m_AudioSource.Play();
+
+                StartCoroutine(ReadRawAudio());
+
+                if(onRecordingStart != null)
+                    onRecordingStart(m_Key);
             }
-            namesOfMicsAvailable.Add(device);
         }
-        microphoneDeviceName = namesOfMicsAvailable[0]; // default to first
 
-        UpdateMicrophone();
-    }
-
-    void UpdateMicrophone() {
-        audioSource.Stop();
-        audioSource.clip = Microphone.Start(microphoneDeviceName, true, 10, recordingSampleRate);
-        audioSource.loop = true;
-
-        if (Microphone.IsRecording(microphoneDeviceName)) {
-            // Wait until the recording starts
-            while (!(Microphone.GetPosition(microphoneDeviceName) > 0)) { }
-
-            Debug.Log("Recording started with " + microphoneDeviceName);
-            audioSource.Play();
+        public float[] GetSpectrumData(FFTWindow fftWindow, int sampleCount) {
+            var spectrumData = new float[sampleCount];
+            m_AudioSource.GetSpectrumData(spectrumData, 0, fftWindow);
+            return spectrumData;
         }
-        else
-            Debug.Log(microphoneDeviceName + " doesn't work!");
-    }
 
+        public void StopRecording() {
+            if (Microphone.IsRecording(GetCurrMicDevice())) {
+                m_IsRecording = false;
+                Microphone.End(GetCurrMicDevice());
 
-    /// <summary>
-    /// Sets the given index from <see cref="GetDeviceNames()"/> as the active Mic
-    /// </summary>
-    /// <param name="micIndex">The index of the microphone to be used as returned by <see cref="GetDeviceNames()"/></param>
-    public void ChangeMicDevice(int micIndex) {  // Use GetDeviceNames to get all the mics available and ten send the appropriate index
-        microphoneDeviceName = namesOfMicsAvailable[micIndex];
-        UpdateMicrophone();
-    }
+                StopCoroutine(ReadRawAudio());
 
-    /// <summary>
-    /// Returns all the microphone names as a list
-    /// </summary>
-    /// <returns>All available mic device names as a list of strings</returns>
-    public List<string> GetDeviceNames() {
-        return namesOfMicsAvailable;
-    }
+                Destroy(m_AudioClip);
+                m_AudioClip = null;
 
-    /// <summary>
-    /// Sets the threshold for the spectrum, used for calculating fundamental frequency
-    /// </summary>
-    /// <param name="value">The new threshold to be set</param>
-    public void SetThreshold(float value) {
-        threshold = value;
-    }
-
-    /// <summary>
-    /// Gets the average volume from the current output data
-    /// </summary>
-    /// <returns>Average volume in a float</returns>
-    public float GetAveragedVolume() {
-        float[] data = new float[256];
-        float volumeSum = 0;
-        audioSource.GetOutputData(data, 0);
-        foreach (float s in data) {
-            volumeSum += Mathf.Abs(s);
+                if(onRecordingStop != null)
+                    onRecordingStop(m_Key);
+            }
         }
-        return volumeSum / 256;
-    }
 
-    /// <summary>
-    /// Gets the current audio spectrum
-    /// </summary>
-    /// <param name="samplingRate">Number of samples required</param>
-    /// <returns>Samples in a float array</returns>
-    public float[] GetSpectrumData(int samplingRate) {
-        var spectrumData = new float[samplingRate];
-        audioSource.GetSpectrumData(spectrumData, 0, fftWindow);
-        return spectrumData;
-    }
+        IEnumerator ReadRawAudio() {
+            int loops = 0;
+            int readAbsPos = 0;
+            int prevPos = 0;
 
-    /// <summary>
-    /// Gets the lowest frequency in the spectrum with the threshold in mid
-    /// </summary>
-    /// <returns>Fundamental frequency as a float</returns>
-    public float GetFundamentalFrequency() {
-        float fundamentalFrequency = 0.0f;
-        var spectrumData = new float[spectrumSampleRate];
-        audioSource.GetSpectrumData(spectrumData, 0, fftWindow);
-        float s = 0.0f;
-        int i = 0;
-        for (int j = 1; j < spectrumSampleRate; j++) {
-            if (spectrumData[j] > threshold) // volume must meet minimum threshold
-            {
-                if (s < spectrumData[j]) {
-                    s = spectrumData[j];
-                    i = j;
+            while (m_AudioClip != null && Microphone.IsRecording(GetCurrMicDevice())) {
+                bool isNewDataAvailable = true;
+
+                while (isNewDataAvailable) {
+                    int currPos = Microphone.GetPosition(GetCurrMicDevice());
+                    if (currPos < prevPos)
+                        loops++;
+                    prevPos = currPos;
+
+                    var currAbsPos = loops * m_AudioClip.samples + currPos;
+                    var nextReadAbsPos = readAbsPos + m_AudioFrameBuffer.Length;
+
+                    if (nextReadAbsPos < currAbsPos) {
+                        m_AudioClip.GetData(m_AudioFrameBuffer, readAbsPos % m_AudioClip.samples);
+
+                        if(onAudioFrameCollected != null)
+                            onAudioFrameCollected(m_AudioFrameBuffer);
+
+                        readAbsPos = nextReadAbsPos;
+                        isNewDataAvailable = true;
+                    }
+                    else
+                        isNewDataAvailable = false;
                 }
+                yield return null;
             }
         }
-        fundamentalFrequency = i * recordingSampleRate / spectrumSampleRate;
-        frequency = fundamentalFrequency;
-        return fundamentalFrequency;
+    
+        string GetCurrMicDevice() {
+            return m_MicDevices[m_CurrMicDeviceIndex];
+        }
     }
 }
