@@ -14,7 +14,7 @@ namespace UniMic {
         public float scaleRate = 1;
 
         void Start() {
-            m_MicrophoneManager = MicrophoneManager.Create(44100, 1, 50);
+            m_MicrophoneManager = MicrophoneManager.Create(44100, 1, 20);
             m_MicrophoneManager.StartRecording("TEST");
         }
 
