@@ -180,6 +180,19 @@ namespace UniMic {
         }
 
         /// <summary>
+        /// Returns a Root Mean Squared value of the audio frame. Can be used to approximate volume.
+        /// </summary>
+        /// <returns>A float from 0 to 1</returns>
+        public float GetRMS() {
+            float sum = 0;
+            for (int i = 0; i < m_AudioFrame.Length; i++)
+                sum += m_AudioFrame[i] * m_AudioFrame[i];
+
+            var rms = Mathf.Sqrt(sum / m_AudioFrame.Length);
+            return rms;
+        }
+
+        /// <summary>
         /// Ends the Mic stream.
         /// </summary>
         public void StopRecording() {
