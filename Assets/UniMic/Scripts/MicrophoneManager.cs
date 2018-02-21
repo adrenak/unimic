@@ -17,6 +17,12 @@ namespace UniMic {
         // Sample rate of the recorded audio. Default to 16k
         int m_SampleRate = 16000;
 
+        // Smoothness of the RMS value
+        float m_RMSSmoothness;
+
+        // The smoothened RMS value
+        float m_SmoothenedRMS;
+
         // The length of the AudioClip in Mic buffer in seconds
         int m_BufferLengthSec = 1;
 
@@ -143,12 +149,12 @@ namespace UniMic {
             m_CurrentDeviceIndex = index;
             Microphone.Start(CurrentDeviceName, true, m_BufferLengthSec, m_SampleRate);
         }
-        
+
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
         /// <param name="key">A user defined key to identify the recording</param>
-        public void StartRecording (string key) {
+        public void StartRecording(string key) {
             StopRecording();
             if (!Microphone.IsRecording(CurrentDeviceName)) {
                 m_Key = key;
@@ -162,8 +168,26 @@ namespace UniMic {
 
                 StartCoroutine(ReadRawAudio());
 
-                if(OnStartRecording != null)
+                if (OnStartRecording != null)
                     OnStartRecording(m_Key);
+            }
+        }
+
+        /// <summary>
+        /// Ends the Mic stream.
+        /// </summary>
+        public void StopRecording() {
+            if (Microphone.IsRecording(CurrentDeviceName)) {
+                m_IsRecording = false;
+                Microphone.End(CurrentDeviceName);
+
+                StopCoroutine(ReadRawAudio());
+
+                Destroy(m_AudioClip);
+                m_AudioClip = null;
+
+                if (OnStopRecording != null)
+                    OnStopRecording(m_Key);
             }
         }
 
@@ -183,7 +207,7 @@ namespace UniMic {
         /// Returns a Root Mean Squared value of the audio frame. Can be used to approximate volume.
         /// </summary>
         /// <returns>A float from 0 to 1</returns>
-        public float GetRMS() {
+        public float GetAbsoluteRMS() {
             float sum = 0;
             for (int i = 0; i < m_AudioFrame.Length; i++)
                 sum += m_AudioFrame[i] * m_AudioFrame[i];
@@ -193,21 +217,20 @@ namespace UniMic {
         }
 
         /// <summary>
-        /// Ends the Mic stream.
+        /// Returns a smoothened RMS value. It is more stable than <see cref="GetAbsoluteRMS"/> and lower in magnitude.
         /// </summary>
-        public void StopRecording() {
-            if (Microphone.IsRecording(CurrentDeviceName)) {
-                m_IsRecording = false;
-                Microphone.End(CurrentDeviceName);
+        /// <returns>Smoothened RMS</returns>
+        public float GetSmoothRMS() {
+            if (m_RMSSmoothness == 0) return GetAbsoluteRMS();
+            return m_SmoothenedRMS = Mathf.Lerp(m_SmoothenedRMS, GetAbsoluteRMS(), m_RMSSmoothness);
+        }
 
-                StopCoroutine(ReadRawAudio());
-
-                Destroy(m_AudioClip);
-                m_AudioClip = null;
-
-                if(OnStopRecording != null)
-                    OnStopRecording(m_Key);
-            }
+        /// <summary>
+        /// Sets the linear interolation rate for smoothing the RMS 
+        /// </summary>
+        /// <param name="smoothness"></param>
+        public void SetRMSSmoothness(float smoothness) {
+            m_RMSSmoothness = smoothness;
         }
 
         IEnumerator ReadRawAudio() {
@@ -230,7 +253,7 @@ namespace UniMic {
                     if (nextReadAbsPos < currAbsPos) {
                         m_AudioClip.GetData(m_AudioFrame, readAbsPos % m_AudioClip.samples);
 
-                        if(OnAudioFrameCollected != null)
+                        if (OnAudioFrameCollected != null)
                             OnAudioFrameCollected(m_AudioFrame);
 
                         readAbsPos = nextReadAbsPos;

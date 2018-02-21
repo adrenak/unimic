@@ -6,7 +6,10 @@ namespace UniMic {
         Transform[] vizBars;
 
         [SerializeField]
-        Transform volBar;
+        Transform smoothVolBar;
+
+        [SerializeField]
+        Transform absVolBar;
 
         [SerializeField]
         [Range(1, 1000)]
@@ -19,15 +22,22 @@ namespace UniMic {
 
         void Start() {
             m_MicrophoneManager = MicrophoneManager.Create(16000, 1, 20);
+            m_MicrophoneManager.SetRMSSmoothness(.05F);
             m_MicrophoneManager.StartRecording("TEST");
         }
 
         void Update() {
-            // Update volume bar
-            volBar.localScale = new Vector3(
-                volBar.localScale.x,
-                Mathf.Lerp(volBar.localScale.y, m_MicrophoneManager.GetRMS() * scale, scaleRate),
-                volBar.localScale.z
+            // Update volume bars
+            smoothVolBar.localScale = new Vector3(
+                smoothVolBar.localScale.x,
+                Mathf.Lerp(smoothVolBar.localScale.y, m_MicrophoneManager.GetSmoothRMS() * scale, scaleRate),
+                smoothVolBar.localScale.z
+            );
+
+            absVolBar.localScale = new Vector3(
+                absVolBar.localScale.x,
+                Mathf.Lerp(absVolBar.localScale.y, m_MicrophoneManager.GetAbsoluteRMS() * scale, scaleRate),
+                absVolBar.localScale.z
             );
 
             // Update spectrum bars
