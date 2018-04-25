@@ -237,6 +237,7 @@ namespace UniMic {
             int loops = 0;
             int readAbsPos = 0;
             int prevPos = 0;
+            float[] tempAudioFrame = new float[m_AudioFrame.Length];
 
             while (m_AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
                 bool isNewDataAvailable = true;
@@ -248,11 +249,12 @@ namespace UniMic {
                     prevPos = currPos;
 
                     var currAbsPos = loops * m_AudioClip.samples + currPos;
-                    var nextReadAbsPos = readAbsPos + m_AudioFrame.Length;
+                    var nextReadAbsPos = readAbsPos + tempAudioFrame.Length;
 
                     if (nextReadAbsPos < currAbsPos) {
-                        m_AudioClip.GetData(m_AudioFrame, readAbsPos % m_AudioClip.samples);
+                        m_AudioClip.GetData(tempAudioFrame, readAbsPos % m_AudioClip.samples);
 
+                        m_AudioFrame = tempAudioFrame;
                         if (OnAudioFrameCollected != null)
                             OnAudioFrameCollected(m_AudioFrame);
 
