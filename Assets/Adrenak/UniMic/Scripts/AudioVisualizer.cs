@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UniMic {
+namespace Adrenak {
     public class AudioVisualizer : MonoBehaviour {
         [SerializeField]
         Transform[] vizBars;
@@ -18,25 +18,24 @@ namespace UniMic {
         [SerializeField]
         float scaleRate = 1;
 
-        MicrophoneManager m_MicrophoneManager;
+        UniMic m_MicrophoneManager;
 
         void Start() {
-            m_MicrophoneManager = MicrophoneManager.Create(16000, 1, 20);
-            m_MicrophoneManager.SetRMSSmoothness(.05F);
-            m_MicrophoneManager.StartRecording("TEST");
+            m_MicrophoneManager = UniMic.Create();
+            m_MicrophoneManager.StartRecording();
         }
 
         void Update() {
             // Update volume bars
             smoothVolBar.localScale = new Vector3(
                 smoothVolBar.localScale.x,
-                Mathf.Lerp(smoothVolBar.localScale.y, m_MicrophoneManager.GetSmoothRMS() * scale, scaleRate),
+                Mathf.Lerp(smoothVolBar.localScale.y, m_MicrophoneManager.GetRMS() * scale, scaleRate),
                 smoothVolBar.localScale.z
             );
 
             absVolBar.localScale = new Vector3(
                 absVolBar.localScale.x,
-                Mathf.Lerp(absVolBar.localScale.y, m_MicrophoneManager.GetAbsoluteRMS() * scale, scaleRate),
+                Mathf.Lerp(absVolBar.localScale.y, m_MicrophoneManager.GetRMS() * scale, scaleRate),
                 absVolBar.localScale.z
             );
 
