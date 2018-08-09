@@ -1,19 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Adrenak {
+namespace Adrenak.UniMic {
     [RequireComponent(typeof(AudioSource))]
-    public class UniMic : MonoBehaviour {
+    public class Mic : MonoBehaviour {
         // ================================================
         // FIELDS
         // ================================================
-        #region FIELDS
+        #region MEMBERS
         /// <summary>
         /// Whether the microphone is running
         /// </summary>
         public bool IsRunning { get; private set; }
+
+        /// <summary>
+        /// The frequency at which the mic is operating
+        /// </summary>
+        public int Frequency { get; private set; }
 
         /// <summary>
         /// Last populated audio buffer
@@ -21,10 +27,15 @@ namespace Adrenak {
         public float[] Buffer { get; private set; }
 
         /// <summary>
+        /// The volume of the AudioSource attached to the mic. 
+        /// </summary>
+        public float Volume { get; private set; }
+
+        /// <summary>
         /// Buffer duration/length in milliseconds
         /// </summary>
         public int BufferLen { get; private set; }
-
+        
         /// <summary>
         /// The AudioClip currently being streamed in the Mic
         /// </summary>
@@ -47,7 +58,6 @@ namespace Adrenak {
             get { return Devices[CurrentDeviceIndex]; }
         }
 
-        int m_SampleRate;
         AudioSource m_AudioSource;      // Plays the audio clip at 0 volume to get spectrum data
         #endregion
 
@@ -80,17 +90,14 @@ namespace Adrenak {
         /// <summary>
         /// Creates an instance and initialises with the given parameters
         /// </summary>
-        /// <param name="sampleRate">The sample rate of the audio input. </param>
+        /// <param name="frequency">The sample rate of the audio input. </param>
         /// <param name="bufferDuration">The buffer length in seconds</param>
         /// <param name="bufferLen">The frame length in milliseconds</param>
         /// <returns>A new instance</returns>
-        public static UniMic Create(int sampleRate = 16000, int bufferLen = 10) {
-            GameObject cted = new GameObject("UniMic");
+        public static Mic Create() {
+            GameObject cted = new GameObject("UniMic Microphone");
             DontDestroyOnLoad(cted);
-            UniMic instance = cted.AddComponent<UniMic>();
-
-            instance.m_SampleRate = sampleRate;
-            instance.BufferLen = bufferLen;
+            Mic instance = cted.AddComponent<Mic>();
 
             instance.m_AudioSource = cted.GetComponent<AudioSource>();
 
@@ -109,30 +116,42 @@ namespace Adrenak {
         public void ChangeDevice(int index) {
             Microphone.End(CurrentDeviceName);
             CurrentDeviceIndex = index;
-            Microphone.Start(CurrentDeviceName, true, 1, m_SampleRate);
+            Microphone.Start(CurrentDeviceName, true, 1, Frequency);
         }
 
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        public void StartRecording() {
+        public void StartRecording(int frequency = 16000, int bufferLen = 10, float volume = 0) {
             if (Microphone.IsRecording(CurrentDeviceName)) return;
 
             StopRecording();
             IsRunning = true;
 
-            AudioClip = Microphone.Start(CurrentDeviceName, true, 1, m_SampleRate);
-            Buffer = new float[m_SampleRate / 1000 * BufferLen * AudioClip.channels];
+            Frequency = frequency;
+            BufferLen = bufferLen;
+            Volume = volume;
+
+            AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
+            Buffer = new float[Frequency / 1000 * BufferLen * AudioClip.channels];
 
             m_AudioSource.clip = AudioClip;
             m_AudioSource.loop = true;
-            m_AudioSource.volume = 0;
+            m_AudioSource.volume = Volume;
             m_AudioSource.Play();
 
             StartCoroutine(ReadRawAudio());
 
             if(OnStartRecording != null)
                 OnStartRecording.Invoke();
+        }
+
+        /// <summary>
+        /// Stops and starts the microphone with a different frequency and buffer length
+        /// </summary>
+        public void RestartRecording(int frequency = 16000, int bufferLen = 10, float volume = 0) {
+            StopRecording();
+            StartRecording(frequency, bufferLen, volume);
         }
 
         /// <summary>
@@ -162,7 +181,12 @@ namespace Adrenak {
         /// <returns></returns>
         public float[] GetSpectrumData(FFTWindow fftWindow, int sampleCount) {
             var spectrumData = new float[sampleCount];
-            m_AudioSource.GetSpectrumData(spectrumData, 0, fftWindow);
+            try {
+                m_AudioSource.GetSpectrumData(spectrumData, 0, fftWindow);
+            }
+            catch(NullReferenceException e) {
+                spectrumData = null;
+            }
             return spectrumData;
         }
 
@@ -171,12 +195,17 @@ namespace Adrenak {
         /// </summary>
         /// <returns>A float from 0 to 1</returns>
         public float GetRMS() {
-            float sum = 0;
+            float result, sum = 0;
             for (int i = 0; i < Buffer.Length; i++)
                 sum += Buffer[i] * Buffer[i];
 
-            var rms = Mathf.Sqrt(sum / Buffer.Length);
-            return rms;
+            try {
+                result = Mathf.Sqrt(sum / Buffer.Length);
+            }
+            catch(DivideByZeroException e) {
+                result = 0;
+            }
+            return result;
         }
 
         IEnumerator ReadRawAudio() {
