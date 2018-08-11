@@ -19,30 +19,38 @@ public class AudioVisualizer : MonoBehaviour {
     float scaleRate = 1;
 
     Mic m_Mic;
+    AudioBuffer m_AudioBuffer;
+    AudioSource m_Source;
 
     void Start() {
+        m_Source = gameObject.AddComponent<AudioSource>();
+
         m_Mic = Mic.Create();
-        m_Mic.StartRecording();
+        m_Mic.StartStreaming(16000, 10, 0);
+
+        m_AudioBuffer = new AudioBuffer(16000, 1, 160, 100);
+
+        int count = 0;
+        m_Mic.OnSegmentReady.AddListener(buffer => {
+            // Do a moving average to remove noise
+            for (int i = 2; i < buffer.Length - 2; i++)
+                buffer[i] = (buffer[i-2] + buffer[i - 1] + buffer[i] + buffer[i + 1] + buffer[i+2]) / 5;
+            this.m_AudioBuffer.Feed(buffer, count++);
+        });
+
+        m_Source.loop = true;
+        m_Source.clip = m_AudioBuffer.Clip;
+        m_AudioBuffer.OnReady += delegate () {
+            m_Source.Play();
+        };    
     }
 
     void Update() {
         if (Input.GetKeyDown(KeyCode.R))
-            m_Mic.RestartRecording();
+            m_Mic.StartStreaming();
 
         if (!m_Mic.IsRunning) return;
-        // Update volume bars
-        smoothVolBar.localScale = new Vector3(
-            smoothVolBar.localScale.x,
-            Mathf.Lerp(smoothVolBar.localScale.y, m_Mic.GetRMS() * scale, scaleRate),
-            smoothVolBar.localScale.z
-        );
-
-        absVolBar.localScale = new Vector3(
-            absVolBar.localScale.x,
-            Mathf.Lerp(absVolBar.localScale.y, m_Mic.GetRMS() * scale, scaleRate),
-            absVolBar.localScale.z
-        );
-
+        
         // Update spectrum bars
         var spectrum = m_Mic.GetSpectrumData(FFTWindow.Rectangular, 512);
         // TODO: This is rubbish logic but it looks genuine so ok. In reality, spectrum chunks should be added to get an actual 8-ISO standard spectrum or something

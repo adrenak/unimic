@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace Adrenak.UniMic {
     [RequireComponent(typeof(AudioSource))]
+    // TODO: Move Spectrum outside
     public class Mic : MonoBehaviour {
         // ================================================
         // FIELDS
@@ -22,9 +23,11 @@ namespace Adrenak.UniMic {
         public int Frequency { get; private set; }
 
         /// <summary>
-        /// Last populated audio buffer
+        /// Last populated audio segment
         /// </summary>
-        public float[] Buffer { get; private set; }
+        public float[] Segment { get; private set; }
+
+        float[] tmp;
 
         /// <summary>
         /// The volume of the AudioSource attached to the mic. 
@@ -32,9 +35,9 @@ namespace Adrenak.UniMic {
         public float Volume { get; private set; }
 
         /// <summary>
-        /// Buffer duration/length in milliseconds
+        /// Segment duration/length in milliseconds
         /// </summary>
-        public int BufferLen { get; private set; }
+        public int SegmentLen { get; private set; }
         
         /// <summary>
         /// The AudioClip currently being streamed in the Mic
@@ -75,7 +78,7 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// Invoked everytime an audio frame is collected. Includes the frame.
         /// </summary>
-        public FloatArrayEvent OnBufferReady = new FloatArrayEvent();
+        public FloatArrayEvent OnSegmentReady = new FloatArrayEvent();
 
         /// <summary>
         /// Invoked when the instance stop Recording.
@@ -122,18 +125,16 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        public void StartRecording(int frequency = 16000, int bufferLen = 10, float volume = 0) {
-            if (Microphone.IsRecording(CurrentDeviceName)) return;
-
-            StopRecording();
+        public void StartStreaming(int frequency = 16000, int segmentLen = 10, float volume = 0) {
+            StopStreaming();
             IsRunning = true;
 
             Frequency = frequency;
-            BufferLen = bufferLen;
+            SegmentLen = segmentLen;
             Volume = volume;
 
             AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
-            Buffer = new float[Frequency / 1000 * BufferLen * AudioClip.channels];
+            Segment = new float[Frequency / 1000 * SegmentLen * AudioClip.channels];
 
             m_AudioSource.clip = AudioClip;
             m_AudioSource.loop = true;
@@ -147,17 +148,9 @@ namespace Adrenak.UniMic {
         }
 
         /// <summary>
-        /// Stops and starts the microphone with a different frequency and buffer length
-        /// </summary>
-        public void RestartRecording(int frequency = 16000, int bufferLen = 10, float volume = 0) {
-            StopRecording();
-            StartRecording(frequency, bufferLen, volume);
-        }
-
-        /// <summary>
         /// Ends the Mic stream.
         /// </summary>
-        public void StopRecording() {
+        public void StopStreaming() {
             if (!Microphone.IsRecording(CurrentDeviceName)) return;
 
             IsRunning = false;
@@ -189,30 +182,12 @@ namespace Adrenak.UniMic {
             }
             return spectrumData;
         }
-
-        /// <summary>
-        /// Returns a Root Mean Squared value of the audio data. Can be used to approximate volume.
-        /// </summary>
-        /// <returns>A float from 0 to 1</returns>
-        public float GetRMS() {
-            float result, sum = 0;
-            for (int i = 0; i < Buffer.Length; i++)
-                sum += Buffer[i] * Buffer[i];
-
-            try {
-                result = Mathf.Sqrt(sum / Buffer.Length);
-            }
-            catch(DivideByZeroException e) {
-                result = 0;
-            }
-            return result;
-        }
-
+        
         IEnumerator ReadRawAudio() {
             int loops = 0;
             int readAbsPos = 0;
             int prevPos = 0;
-            float[] tempAudioFrame = new float[Buffer.Length];
+            float[] tempAudioFrame = new float[Segment.Length];
 
             while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
                 bool isNewDataAvailable = true;
@@ -229,10 +204,10 @@ namespace Adrenak.UniMic {
                     if (nextReadAbsPos < currAbsPos) {
                         AudioClip.GetData(tempAudioFrame, readAbsPos % AudioClip.samples);
 
-                        Buffer = tempAudioFrame;
+                        Segment = tempAudioFrame;
 
-                        if(OnBufferReady != null)
-                            OnBufferReady.Invoke(Buffer);
+                        if(OnSegmentReady != null)
+                            OnSegmentReady.Invoke(Segment);
 
                         readAbsPos = nextReadAbsPos;
                         isNewDataAvailable = true;
