@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using Adrenak.UniMic;
+using System.Collections;
 
 public class AudioVisualizer : MonoBehaviour {
     [SerializeField]
@@ -26,16 +27,17 @@ public class AudioVisualizer : MonoBehaviour {
         m_Source = gameObject.AddComponent<AudioSource>();
 
         m_Mic = Mic.Create();
-        m_Mic.StartStreaming(16000, 10, 0);
+        m_Mic.StartStreaming(16000, 20, 0);
 
-        m_AudioBuffer = new AudioBuffer(16000, 1, 160, 100);
+        m_AudioBuffer = AudioBuffer.Create(16000, 1, 320, 100, .8F);
 
         int count = 0;
-        m_Mic.OnSegmentReady.AddListener(buffer => {
+        m_Mic.OnSegmentReady.AddListener(segment => {
             // Do a moving average to remove noise
-            for (int i = 2; i < buffer.Length - 2; i++)
-                buffer[i] = (buffer[i-2] + buffer[i - 1] + buffer[i] + buffer[i + 1] + buffer[i+2]) / 5;
-            this.m_AudioBuffer.Feed(buffer, count++);
+            for (int i = 2; i < segment.Length - 2; i++)
+                segment[i] = (segment[i - 2] + segment[i - 1] + segment[i] + segment[i + 1] + segment[i + 2]) / 5;
+            m_AudioBuffer.Feed(segment, count);
+            count++;
         });
 
         m_Source.loop = true;
@@ -44,7 +46,7 @@ public class AudioVisualizer : MonoBehaviour {
             m_Source.Play();
         };    
     }
-
+    
     void Update() {
         if (Input.GetKeyDown(KeyCode.R))
             m_Mic.StartStreaming();
