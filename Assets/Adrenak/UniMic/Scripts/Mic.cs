@@ -6,7 +6,6 @@ using System.Collections.Generic;
 
 namespace Adrenak.UniMic {
     [RequireComponent(typeof(AudioSource))]
-    // TODO: Move Spectrum outside
     public class Mic : MonoBehaviour {
         // ================================================
         // FIELDS

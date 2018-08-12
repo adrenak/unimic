@@ -27,15 +27,16 @@ public class AudioVisualizer : MonoBehaviour {
         m_Source = gameObject.AddComponent<AudioSource>();
 
         m_Mic = Mic.Create();
-        m_Mic.StartStreaming(16000, 20, 0);
+        m_Mic.StartStreaming(16000, 100, 0);
 
-        m_AudioBuffer = AudioBuffer.Create(16000, 1, 320, 100, .8F);
+        m_AudioBuffer = new AudioBuffer(16000, 1, 1600, 10);
 
         int count = 0;
         m_Mic.OnSegmentReady.AddListener(segment => {
             // Do a moving average to remove noise
-            for (int i = 2; i < segment.Length - 2; i++)
+            for (int i = 2; i < segment.Length - 2; i++) 
                 segment[i] = (segment[i - 2] + segment[i - 1] + segment[i] + segment[i + 1] + segment[i + 2]) / 5;
+
             m_AudioBuffer.Feed(segment, count);
             count++;
         });
@@ -50,6 +51,7 @@ public class AudioVisualizer : MonoBehaviour {
     void Update() {
         if (Input.GetKeyDown(KeyCode.R))
             m_Mic.StartStreaming();
+
 
         if (!m_Mic.IsRunning) return;
         
