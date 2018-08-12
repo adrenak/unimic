@@ -26,8 +26,6 @@ namespace Adrenak.UniMic {
         /// </summary>
         public float[] Segment { get; private set; }
 
-        float[] tmp;
-
         /// <summary>
         /// The volume of the AudioSource attached to the mic. 
         /// </summary>
@@ -37,7 +35,7 @@ namespace Adrenak.UniMic {
         /// Segment duration/length in milliseconds
         /// </summary>
         public int SegmentLen { get; private set; }
-        
+
         /// <summary>
         /// The AudioClip currently being streamed in the Mic
         /// </summary>
@@ -61,13 +59,14 @@ namespace Adrenak.UniMic {
         }
 
         AudioSource m_AudioSource;      // Plays the audio clip at 0 volume to get spectrum data
+        int m_SegmentCount = 0;
         #endregion
 
         // ================================================
         // EVENTS
         // ================================================
         #region EVENTS
-        public class FloatArrayEvent : UnityEvent<float[]> { }
+        public class SegmentReadyEvent : UnityEvent<int, float[]> { }
 
         /// <summary>
         /// Invoked when the instance starts Recording.
@@ -77,38 +76,39 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// Invoked everytime an audio frame is collected. Includes the frame.
         /// </summary>
-        public FloatArrayEvent OnSegmentReady = new FloatArrayEvent();
+        public SegmentReadyEvent OnSegmentReady = new SegmentReadyEvent();
 
         /// <summary>
         /// Invoked when the instance stop Recording.
         /// </summary>
         public UnityEvent OnStopRecording;
-        #endregion 
+        #endregion
 
         // ================================================
         // METHODS
         // ================================================
         #region METHODS
-        /// <summary>
-        /// Creates an instance and initialises with the given parameters
-        /// </summary>
-        /// <param name="frequency">The sample rate of the audio input. </param>
-        /// <param name="bufferDuration">The buffer length in seconds</param>
-        /// <param name="bufferLen">The frame length in milliseconds</param>
-        /// <returns>A new instance</returns>
-        public static Mic Create() {
-            GameObject cted = new GameObject("UniMic Microphone");
-            DontDestroyOnLoad(cted);
-            Mic instance = cted.AddComponent<Mic>();
 
-            instance.m_AudioSource = cted.GetComponent<AudioSource>();
+        static Mic m_Instance;
+        public static Mic Instance {
+            get {
+                if (m_Instance == null)
+                    m_Instance = GameObject.FindObjectOfType<Mic>();
+                if (m_Instance == null) {
+                    m_Instance = new GameObject("UniMic Microphone").AddComponent<Mic>();
+                    DontDestroyOnLoad(m_Instance.gameObject);
+                }
+                return m_Instance;
+            }
+        }
 
-            instance.Devices = new List<string>();
+        void Awake() {
+            m_AudioSource = GetComponent<AudioSource>();
+
+            Devices = new List<string>();
             foreach (var device in Microphone.devices)
-                instance.Devices.Add(device);
-            instance.CurrentDeviceIndex = 0;
-
-            return instance;
+                Devices.Add(device);
+            CurrentDeviceIndex = 0;
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Adrenak.UniMic {
 
             StartCoroutine(ReadRawAudio());
 
-            if(OnStartRecording != null)
+            if (OnStartRecording != null)
                 OnStartRecording.Invoke();
         }
 
@@ -161,7 +161,7 @@ namespace Adrenak.UniMic {
 
             StopCoroutine(ReadRawAudio());
 
-            if(OnStopRecording != null)
+            if (OnStopRecording != null)
                 OnStopRecording.Invoke();
         }
 
@@ -176,12 +176,12 @@ namespace Adrenak.UniMic {
             try {
                 m_AudioSource.GetSpectrumData(spectrumData, 0, fftWindow);
             }
-            catch(NullReferenceException e) {
+            catch (NullReferenceException e) {
                 spectrumData = null;
             }
             return spectrumData;
         }
-        
+
         IEnumerator ReadRawAudio() {
             int loops = 0;
             int readAbsPos = 0;
@@ -204,9 +204,9 @@ namespace Adrenak.UniMic {
                         AudioClip.GetData(tempAudioFrame, readAbsPos % AudioClip.samples);
 
                         Segment = tempAudioFrame;
-
-                        if(OnSegmentReady != null)
-                            OnSegmentReady.Invoke(Segment);
+                        m_SegmentCount++;
+                        if (OnSegmentReady != null)
+                            OnSegmentReady.Invoke(m_SegmentCount, Segment);
 
                         readAbsPos = nextReadAbsPos;
                         isNewDataAvailable = true;

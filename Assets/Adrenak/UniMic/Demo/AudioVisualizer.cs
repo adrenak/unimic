@@ -19,20 +19,19 @@ public class AudioVisualizer : MonoBehaviour {
     [SerializeField]
     float scaleRate = 1;
 
-    Mic m_Mic;
     AudioBuffer m_AudioBuffer;
     AudioSource m_Source;
 
     void Start() {
         m_Source = gameObject.AddComponent<AudioSource>();
 
-        m_Mic = Mic.Create();
-        m_Mic.StartStreaming(16000, 100, 0);
+        var mic = Mic.Instance;
+        mic.StartStreaming(16000, 100, 0);
 
         m_AudioBuffer = new AudioBuffer(16000, 1, 1600, 10);
 
         int count = 0;
-        m_Mic.OnSegmentReady.AddListener(segment => {
+        mic.OnSegmentReady.AddListener((index, segment) => {
             // Do a moving average to remove noise
             for (int i = 2; i < segment.Length - 2; i++) 
                 segment[i] = (segment[i - 2] + segment[i - 1] + segment[i] + segment[i + 1] + segment[i + 2]) / 5;
@@ -49,14 +48,12 @@ public class AudioVisualizer : MonoBehaviour {
     }
     
     void Update() {
-        if (Input.GetKeyDown(KeyCode.R))
-            m_Mic.StartStreaming();
+        var mic = Mic.Instance;
 
-
-        if (!m_Mic.IsRunning) return;
+        if (!mic.IsRunning) return;
         
         // Update spectrum bars
-        var spectrum = m_Mic.GetSpectrumData(FFTWindow.Rectangular, 512);
+        var spectrum = mic.GetSpectrumData(FFTWindow.Rectangular, 512);
         // TODO: This is rubbish logic but it looks genuine so ok. In reality, spectrum chunks should be added to get an actual 8-ISO standard spectrum or something
         //  There is a good material on this available on youtube here : https://www.youtube.com/watch?v=4Av788P9stk
         //  Will update the code with that later.
