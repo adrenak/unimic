@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Adrenak.UniMic;
-using System.Collections;
 
 public class AudioVisualizer : MonoBehaviour {
     [SerializeField]
@@ -19,7 +18,6 @@ public class AudioVisualizer : MonoBehaviour {
     [SerializeField]
     float scaleRate = 1;
 
-    AudioBuffer m_AudioBuffer;
     AudioSource m_Source;
 
     void Start() {
@@ -28,23 +26,13 @@ public class AudioVisualizer : MonoBehaviour {
         var mic = Mic.Instance;
         mic.StartStreaming(16000, 100, 0);
 
-        m_AudioBuffer = new AudioBuffer(16000, 1, 1600, 10);
-
-        int count = 0;
         mic.OnSegmentReady.AddListener((index, segment) => {
-            // Do a moving average to remove noise
-            for (int i = 2; i < segment.Length - 2; i++) 
-                segment[i] = (segment[i - 2] + segment[i - 1] + segment[i] + segment[i + 1] + segment[i + 2]) / 5;
-
-            m_AudioBuffer.Feed(segment, count);
-            count++;
+			var clip = AudioClip.Create("clip", 1600, mic.AudioClip.channels, mic.AudioClip.frequency, false);
+			clip.SetData(segment, 0);
+			m_Source.clip = clip;
+			m_Source.loop = true;
+			m_Source.Play();
         });
-
-        m_Source.loop = true;
-        m_Source.clip = m_AudioBuffer.Clip;
-        m_AudioBuffer.OnReady += delegate () {
-            m_Source.Play();
-        };    
     }
     
     void Update() {
