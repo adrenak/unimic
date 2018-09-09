@@ -24,7 +24,7 @@ public class AudioVisualizer : MonoBehaviour {
         m_Source = gameObject.AddComponent<AudioSource>();
 
         var mic = Mic.Instance;
-        mic.StartStreaming(16000, 100, 0);
+        mic.StartStreaming(16000, 100);
 
         mic.OnSegmentReady.AddListener((index, segment) => {
 			var clip = AudioClip.Create("clip", 1600, mic.AudioClip.channels, mic.AudioClip.frequency, false);
