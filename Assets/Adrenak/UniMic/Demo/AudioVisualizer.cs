@@ -1,12 +1,10 @@
 ﻿using UnityEngine;
+using System.Linq;
 using Adrenak.UniMic;
 
 public class AudioVisualizer : MonoBehaviour {
     [SerializeField]
     Transform[] vizBars;
-
-    [SerializeField]
-    Transform smoothVolBar;
 
     [SerializeField]
     Transform absVolBar;
@@ -24,21 +22,22 @@ public class AudioVisualizer : MonoBehaviour {
         m_Source = gameObject.AddComponent<AudioSource>();
 
         var mic = Mic.Instance;
-        mic.StartStreaming(16000, 100);
+        mic.StartRecording(16000, 100);
 
-        mic.OnSegmentReady.AddListener((index, segment) => {
-			var clip = AudioClip.Create("clip", 1600, mic.AudioClip.channels, mic.AudioClip.frequency, false);
+        mic.OnSampleReady += (index, segment) => {
+			var clip = AudioClip.Create("clip", 1600, mic.Clip.channels, mic.Clip.frequency, false);
 			clip.SetData(segment, 0);
 			m_Source.clip = clip;
 			m_Source.loop = true;
+			m_Source.mute = true;
 			m_Source.Play();
-        });
+        };
     }
     
     void Update() {
         var mic = Mic.Instance;
 
-        if (!mic.IsRunning) return;
+        if (!mic.IsRecording) return;
         
         // Update spectrum bars
         var spectrum = mic.GetSpectrumData(FFTWindow.Rectangular, 512);
@@ -53,5 +52,11 @@ public class AudioVisualizer : MonoBehaviour {
                 vizBars[i].localScale.z
             );
         }
+
+		absVolBar.localScale = new Vector3(
+			absVolBar.localScale.x,
+			mic.GetOutputData(512).Max(),
+			absVolBar.localScale.z
+		);
     }
 }

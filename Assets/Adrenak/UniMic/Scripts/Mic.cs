@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -14,7 +13,7 @@ namespace Adrenak.UniMic {
 		/// <summary>
 		/// Whether the microphone is running
 		/// </summary>
-		public bool IsRunning { get; private set; }
+		public bool IsRecording { get; private set; }
 
 		/// <summary>
 		/// The frequency at which the mic is operating
@@ -22,26 +21,26 @@ namespace Adrenak.UniMic {
 		public int Frequency { get; private set; }
 
 		/// <summary>
-		/// Last populated audio segment
+		/// Last populated audio sample
 		/// </summary>
-		public float[] Segment { get; private set; }
+		public float[] Sample { get; private set; }
 
 		/// <summary>
-		/// Segment duration/length in milliseconds
+		/// Sample duration/length in milliseconds
 		/// </summary>
-		public int SegmentLen { get; private set; }
+		public int SampleDurationMS { get; private set; }
 
 		/// <summary>
-		/// The length of the segment float array
+		/// The length of the sample float array
 		/// </summary>
-		public int SegmentSize {
-			get { return Frequency * SegmentLen / 1000; }
+		public int SampleLen {
+			get { return Frequency * SampleDurationMS / 1000; }
 		}
 
 		/// <summary>
 		/// The AudioClip currently being streamed in the Mic
 		/// </summary>
-		public AudioClip AudioClip { get; private set; }
+		public AudioClip Clip { get; private set; }
 
 		/// <summary>
 		/// List of all the available Mic devices
@@ -61,29 +60,27 @@ namespace Adrenak.UniMic {
 		}
 
 		AudioSource m_AudioSource;      // Plays the audio clip at 0 volume to get spectrum data
-		int m_SegmentCount = 0;
+		int m_SampleCount = 0;
 		#endregion
 
 		// ================================================
 		// EVENTS
 		// ================================================
 		#region EVENTS
-		public class SegmentReadyEvent : UnityEvent<int, float[]> { }
-
 		/// <summary>
 		/// Invoked when the instance starts Recording.
 		/// </summary>
-		public UnityEvent OnStartRecording;
+		public event Action OnStartRecording;
 
 		/// <summary>
 		/// Invoked everytime an audio frame is collected. Includes the frame.
 		/// </summary>
-		public SegmentReadyEvent OnSegmentReady = new SegmentReadyEvent();
+		public event Action<int, float[]> OnSampleReady;
 
 		/// <summary>
 		/// Invoked when the instance stop Recording.
 		/// </summary>
-		public UnityEvent OnStopRecording;
+		public event Action OnStopRecording;
 		#endregion
 
 		// ================================================
@@ -97,7 +94,7 @@ namespace Adrenak.UniMic {
 				if (m_Instance == null)
 					m_Instance = GameObject.FindObjectOfType<Mic>();
 				if (m_Instance == null) {
-					m_Instance = new GameObject("UniMic Microphone").AddComponent<Mic>();
+					m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
 					DontDestroyOnLoad(m_Instance.gameObject);
 				}
 				return m_Instance;
@@ -113,6 +110,19 @@ namespace Adrenak.UniMic {
 			CurrentDeviceIndex = 0;
 		}
 
+		void Update() {
+			if (m_AudioSource == null)
+				m_AudioSource = gameObject.AddComponent<AudioSource>();
+
+			m_AudioSource.mute = true;
+			m_AudioSource.loop = true;
+			m_AudioSource.maxDistance = m_AudioSource.minDistance = 0;
+			m_AudioSource.spatialBlend = 0;
+
+			if (IsRecording && !m_AudioSource.isPlaying)
+				m_AudioSource.Play();
+		}
+
 		/// <summary>
 		/// Changes to a Mic device for Recording
 		/// </summary>
@@ -126,22 +136,17 @@ namespace Adrenak.UniMic {
 		/// <summary>
 		/// Starts to stream the input of the current Mic device
 		/// </summary>
-		public void StartStreaming(int frequency = 16000, int segmentLen = 10) {
-			StopStreaming();
-			IsRunning = true;
+		public void StartRecording(int frequency = 16000, int sampleLen = 10) {
+			StopRecording();
+			IsRecording = true;
 
 			Frequency = frequency;
-			SegmentLen = segmentLen;
+			SampleDurationMS = sampleLen;
 
-			AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
-			Segment = new float[Frequency / 1000 * SegmentLen * AudioClip.channels];
+			Clip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
+			Sample = new float[Frequency / 1000 * SampleDurationMS * Clip.channels];
 
-			m_AudioSource.clip = AudioClip;
-			m_AudioSource.loop = true;
-			m_AudioSource.volume = .001f;
-			m_AudioSource.maxDistance = m_AudioSource.minDistance = 0;
-			m_AudioSource.spatialBlend = 0;
-			m_AudioSource.Play();
+			m_AudioSource.clip = Clip;
 
 			StartCoroutine(ReadRawAudio());
 
@@ -152,14 +157,14 @@ namespace Adrenak.UniMic {
 		/// <summary>
 		/// Ends the Mic stream.
 		/// </summary>
-		public void StopStreaming() {
+		public void StopRecording() {
 			if (!Microphone.IsRecording(CurrentDeviceName)) return;
 
-			IsRunning = false;
+			IsRecording = false;
 
 			Microphone.End(CurrentDeviceName);
-			Destroy(AudioClip);
-			AudioClip = null;
+			Destroy(Clip);
+			Clip = null;
 			m_AudioSource.Stop();
 
 			StopCoroutine(ReadRawAudio());
@@ -185,28 +190,22 @@ namespace Adrenak.UniMic {
 			return spectrumData;
 		}
 
+		/// <summary>
+		/// Calls .GetOutputData on the inner audiosource
+		/// </summary>
 		public float[] GetOutputData(int sampleCount) {
 			var data = new float[sampleCount];
 			m_AudioSource.GetOutputData(data, 0);
 			return data;
 		}
 
-		public float GetVolume(int sampleCount = 1024) {
-			var data = GetOutputData(sampleCount);
-			float sum = 0;
-			// Multiply by 1000 to compensate for the 0.01 self-volume value
-			for (int i = 0; i < data.Length; i++)
-				sum += Mathf.Abs(data[i] * 1000 * 100000);
-			return sum / sampleCount;
-		}
-
 		IEnumerator ReadRawAudio() {
 			int loops = 0;
 			int readAbsPos = 0;
 			int prevPos = 0;
-			float[] tempAudioFrame = new float[Segment.Length];
+			float[] temp = new float[Sample.Length];
 
-			while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
+			while (Clip != null && Microphone.IsRecording(CurrentDeviceName)) {
 				bool isNewDataAvailable = true;
 
 				while (isNewDataAvailable) {
@@ -215,16 +214,16 @@ namespace Adrenak.UniMic {
 						loops++;
 					prevPos = currPos;
 
-					var currAbsPos = loops * AudioClip.samples + currPos;
-					var nextReadAbsPos = readAbsPos + tempAudioFrame.Length;
+					var currAbsPos = loops * Clip.samples + currPos;
+					var nextReadAbsPos = readAbsPos + temp.Length;
 
 					if (nextReadAbsPos < currAbsPos) {
-						AudioClip.GetData(tempAudioFrame, readAbsPos % AudioClip.samples);
+						Clip.GetData(temp, readAbsPos % Clip.samples);
 
-						Segment = tempAudioFrame;
-						m_SegmentCount++;
-						if (OnSegmentReady != null)
-							OnSegmentReady.Invoke(m_SegmentCount, Segment);
+						Sample = temp;
+						m_SampleCount++;
+						if (OnSampleReady != null)
+							OnSampleReady.Invoke(m_SampleCount, Sample);
 
 						readAbsPos = nextReadAbsPos;
 						isNewDataAvailable = true;
