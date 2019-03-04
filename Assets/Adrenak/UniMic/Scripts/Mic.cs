@@ -107,6 +107,7 @@ namespace Adrenak.UniMic {
 			Devices = new List<string>();
 			foreach (var device in Microphone.devices)
 				Devices.Add(device);
+
 			CurrentDeviceIndex = 0;
 		}
 
@@ -114,9 +115,11 @@ namespace Adrenak.UniMic {
 			if (m_AudioSource == null)
 				m_AudioSource = gameObject.AddComponent<AudioSource>();
 
-			m_AudioSource.mute = true;
+			m_AudioSource.mute = false;
+			m_AudioSource.volume = .1f;
 			m_AudioSource.loop = true;
-			m_AudioSource.maxDistance = m_AudioSource.minDistance = 0;
+			m_AudioSource.maxDistance = 0;
+			m_AudioSource.minDistance = 0;
 			m_AudioSource.spatialBlend = 0;
 
 			if (IsRecording && !m_AudioSource.isPlaying)
@@ -185,8 +188,11 @@ namespace Adrenak.UniMic {
 				m_AudioSource.GetSpectrumData(spectrumData, 0, fftWindow);
 			}
 			catch (NullReferenceException e) {
+				Debug.LogError(e);
 				spectrumData = null;
 			}
+			for (int i = 0; i < spectrumData.Length; i++)
+				spectrumData[i] *= 100;
 			return spectrumData;
 		}
 
