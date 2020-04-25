@@ -1,3 +1,15 @@
+# 1.0.0 (2020-04-25)
+
+
+### Features
+
+* Mic class now only handles Mic audio streaming and does not have an internal AudioSource ([bd44c30](https://github.com/adrenak/UniMic/commit/bd44c30a48827c335c25da2027b7270356669cfe))
+
+
+### BREAKING CHANGES
+
+* Internal AudioSource and related methods deleted
+
 ![Cover](https://github.com/adrenak/UniMic/blob/master/cover.jpg)
 ## UniMic
 A wrapper for Unity's Microphone class.

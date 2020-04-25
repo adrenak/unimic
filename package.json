@@ -9,8 +9,6 @@
 		"email": "adrenak_@outlook.com",
 		"url": "www.vatsalambastha.com"
 	},
-	"dependencies": {
-	},
-	"scopedRegistries": [
-	]
+	"dependencies": {},
+	"scopedRegistries": []
 }
