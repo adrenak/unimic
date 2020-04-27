@@ -184,8 +184,7 @@ namespace Adrenak.UniMic {
 
                         Sample = temp;
                         m_SampleCount++;
-                        if (OnSampleReady != null)
-                            OnSampleReady.Invoke(m_SampleCount, Sample);
+                        OnSampleReady?.Invoke(m_SampleCount, Sample);
 
                         readAbsPos = nextReadAbsPos;
                         isNewDataAvailable = true;
