@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/adrenak/unimic/compare/v1.0.0...v1.0.1) (2020-04-27)
+
+
+### Bug Fixes
+
+* Add ASMDEF ([5a42cc4](https://github.com/adrenak/unimic/commit/5a42cc4a31125a9528104a9dd169e5ddbb180f9a))
+
 # 1.0.0 (2020-04-25)
 
 
