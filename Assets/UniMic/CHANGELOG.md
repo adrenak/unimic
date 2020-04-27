@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/adrenak/unimic/compare/v1.0.1...v1.0.2) (2020-04-27)
+
+
+### Bug Fixes
+
+* Update to .NET 4.x ([f7cd072](https://github.com/adrenak/unimic/commit/f7cd072445347e4365d85bd20bb6c3a5a10b08d8))
+
 ## [1.0.1](https://github.com/adrenak/unimic/compare/v1.0.0...v1.0.1) (2020-04-27)
 
 
