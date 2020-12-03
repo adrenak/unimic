@@ -49,13 +49,17 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// Index of the current Mic device in m_Devices
         /// </summary>
-        public int CurrentDeviceIndex { get; private set; }
+        public int CurrentDeviceIndex { get; private set; } = -1;
 
         /// <summary>
         /// Gets the name of the Mic device currently in use
         /// </summary>
         public string CurrentDeviceName {
-            get { return Devices[CurrentDeviceIndex]; }
+            get {
+                if (CurrentDeviceIndex < 0 || CurrentDeviceIndex >= Microphone.devices.Length)
+                    return string.Empty;
+                return Devices[CurrentDeviceIndex]; 
+            }
         }
 
         int m_SampleCount = 0;
