@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Adrenak.UniMic {
-    [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
     public class Mic : MonoBehaviour {
         // ================================================
         #region MEMBERS
@@ -91,8 +91,7 @@ namespace Adrenak.UniMic {
         static Mic m_Instance;
         public static Mic Instance {
             get {
-                if (m_Instance == null)
-                    m_Instance = GameObject.FindObjectOfType<Mic>();
+                m_Instance ??= FindObjectOfType<Mic>();
                 if (m_Instance == null) {
                     m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
                     DontDestroyOnLoad(m_Instance.gameObject);
@@ -109,6 +108,10 @@ namespace Adrenak.UniMic {
             UpdateDevices();
             CurrentDeviceIndex = 0;
         }
+        
+#if UNITY_EDITOR
+        private void Update() => UpdateDevices();
+#endif
 
         public void UpdateDevices() {
             Devices = new List<string>();
@@ -123,7 +126,9 @@ namespace Adrenak.UniMic {
         public void ChangeDevice(int index) {
             Microphone.End(CurrentDeviceName);
             CurrentDeviceIndex = index;
+#if !UNITY_EDITOR
             StartRecording(Frequency, SampleDurationMS);
+#endif
         }
 
         /// <summary>
@@ -143,8 +148,7 @@ namespace Adrenak.UniMic {
 
             StartCoroutine(ReadRawAudio());
 
-            if (OnStartRecording != null)
-                OnStartRecording.Invoke();
+            OnStartRecording?.Invoke();
         }
 
         /// <summary>
@@ -161,8 +165,7 @@ namespace Adrenak.UniMic {
 
             StopCoroutine(ReadRawAudio());
 
-            if (OnStopRecording != null)
-                OnStopRecording.Invoke();
+            OnStopRecording?.Invoke();
         }
 
         IEnumerator ReadRawAudio() {
@@ -171,7 +174,7 @@ namespace Adrenak.UniMic {
             int prevPos = 0;
             float[] temp = new float[Sample.Length];
 
-            while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
+            while (AudioClip is not null && Microphone.IsRecording(CurrentDeviceName)) {
                 bool isNewDataAvailable = true;
 
                 while (isNewDataAvailable) {
