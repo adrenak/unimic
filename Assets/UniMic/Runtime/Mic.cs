@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Adrenak.UniMic {
-    [RequireComponent(typeof(AudioSource))]
+    [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
     public class Mic : MonoBehaviour {
         // ================================================
         #region MEMBERS
@@ -92,8 +92,7 @@ namespace Adrenak.UniMic {
         static Mic m_Instance;
         public static Mic Instance {
             get {
-                if (m_Instance == null)
-                    m_Instance = FindObjectOfType<Mic>();
+                m_Instance ??= FindObjectOfType<Mic>();
                 if (m_Instance == null) {
                     m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
                     DontDestroyOnLoad(m_Instance.gameObject);
@@ -117,7 +116,7 @@ namespace Adrenak.UniMic {
             if (Devices.Count > 0)
                 CurrentDeviceIndex = 0;
         }
-
+       
         [Obsolete("UpdateDevices method has been removed. Devices property is now always up to date", true)]
         public void UpdateDevices() { }
 
@@ -158,8 +157,7 @@ namespace Adrenak.UniMic {
 
             StartCoroutine(ReadRawAudio());
 
-            if (OnStartRecording != null)
-                OnStartRecording.Invoke();
+            OnStartRecording?.Invoke();
         }
 
         /// <summary>
@@ -176,8 +174,7 @@ namespace Adrenak.UniMic {
 
             StopCoroutine(ReadRawAudio());
 
-            if (OnStopRecording != null)
-                OnStopRecording.Invoke();
+            OnStopRecording?.Invoke();
         }
 
         IEnumerator ReadRawAudio() {
@@ -186,7 +183,7 @@ namespace Adrenak.UniMic {
             int prevPos = 0;
             float[] temp = new float[Sample.Length];
 
-            while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
+            while (AudioClip is not null && Microphone.IsRecording(CurrentDeviceName)) {
                 bool isNewDataAvailable = true;
 
                 while (isNewDataAvailable) {
