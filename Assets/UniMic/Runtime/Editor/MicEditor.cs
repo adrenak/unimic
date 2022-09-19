@@ -29,8 +29,8 @@ namespace Adrenak.UniMic {
 			EditorGUILayout.EndHorizontal();
 
 			// Display a button to reset to the system's default mic
-			if (EditorGUILayout.LinkButton("Switch to System's Default Device"))
-				mic.ChangeDevice(0);
+			if (GUILayout.Button("Switch to System's Default Device"))
+				mic.SetDeviceIndex(0);
 
 			if (showInfo = EditorGUILayout.BeginFoldoutHeaderGroup(showInfo, "Debug Info")) {
 				GUI.enabled = false;
