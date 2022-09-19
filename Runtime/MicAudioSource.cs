@@ -1,20 +1,33 @@
 ﻿using UnityEngine;
 
 namespace Adrenak.UniMic {
+    /// <summary>
+    /// A simple AudioSource based component
+    /// that just plays what the <see cref="Mic"/>
+    /// is receiving.
+    /// Provides optional feature to start the recording
+    /// itself (as a testing tool)
+    /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class MicAudioSource : MonoBehaviour {
+        public bool startRecordingAutomatically = true;
+        [Header("If startRecordingAutomatically is true:")]
+        public int recordingFrequency = 44000;
+        public int sampleDurationMS = 100;
+
         void Start() {
             var audioSource = gameObject.GetComponent<AudioSource>();
 
             var mic = Mic.Instance;
-            mic.StartRecording(16000, 100);
+
+            if(startRecordingAutomatically)
+                mic.StartRecording(recordingFrequency, sampleDurationMS);
 
             mic.OnSampleReady += (index, segment) => {
-                var clip = AudioClip.Create("clip", 1600, mic.AudioClip.channels, mic.AudioClip.frequency, false);
+                var clip = AudioClip.Create("clip", mic.SampleLength, mic.AudioClip.channels, mic.AudioClip.frequency, false);
                 clip.SetData(segment, 0);
                 audioSource.clip = clip;
                 audioSource.loop = true;
-                audioSource.mute = false;
                 audioSource.Play();
             };
         }
