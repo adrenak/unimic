@@ -1,6 +1,7 @@
-#if UNITY_EDITOR
+﻿#if UNITY_EDITOR
 
 using UnityEditor;
+
 using UnityEngine;
 
 namespace Adrenak.UniMic {
@@ -36,11 +37,11 @@ namespace Adrenak.UniMic {
 				GUI.enabled = false;
 
 				EditorGUILayout.IntField("Device Index", mic.CurrentDeviceIndex);
+				EditorGUILayout.LabelField("Device Name", mic.CurrentDeviceName);
 
 				EditorGUILayout.Toggle("Is Recording", mic.IsRecording);
 				EditorGUILayout.IntField("Frequency", mic.Frequency);
 				EditorGUILayout.IntField("Sample Duration (ms)", mic.SampleDurationMS);
-				EditorGUILayout.IntField("Sample Length (s)", mic.SampleDurationMS);
 
 				GUI.enabled = true;
 			}
@@ -51,7 +52,7 @@ namespace Adrenak.UniMic {
 			var device = (string)device_;
 			var mic = (Mic)target;
 
-			mic.ChangeDevice(mic.Devices.FindIndex(x => x == device));
+			mic.SetDeviceIndex(mic.Devices.FindIndex(x => x == device));
 		}
 	}
 }
