@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Adrenak.UniMic {
-    [RequireComponent(typeof(AudioSource)), ExecuteInEditMode]
+    [RequireComponent(typeof(AudioSource))]
+    [ExecuteAlways]
     public class Mic : MonoBehaviour {
         // ================================================
         #region MEMBERS
@@ -92,11 +93,10 @@ namespace Adrenak.UniMic {
         static Mic m_Instance;
         public static Mic Instance {
             get {
-                m_Instance ??= FindObjectOfType<Mic>();
-                if (m_Instance == null) {
+                if(m_Instance == null)
+                    m_Instance = FindObjectOfType<Mic>();
+                if (m_Instance == null) 
                     m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
-                    DontDestroyOnLoad(m_Instance.gameObject);
-                }
                 return m_Instance;
             }
         }
@@ -113,11 +113,13 @@ namespace Adrenak.UniMic {
         }
 
         void Awake() {
+            if(Application.isPlaying)
+                DontDestroyOnLoad(gameObject);
             if (Devices.Count > 0)
                 CurrentDeviceIndex = 0;
         }
        
-        [Obsolete("UpdateDevices method has been removed. Devices property is now always up to date", true)]
+        [Obsolete("UpdateDevices method is no longer needed. Devices property is now always up to date")]
         public void UpdateDevices() { }
 
         /// <summary>
@@ -141,6 +143,14 @@ namespace Adrenak.UniMic {
         }
 
         /// <summary>
+        /// Resumes recording at the frequency and sample duration that was 
+        /// previously being used.
+        /// </summary>
+        public void ResumeRecording() {
+            StartRecording(Frequency, SampleDurationMS);
+        }
+
+        /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
         public void StartRecording(int frequency = 16000, int sampleDurationMS = 10) {
@@ -152,8 +162,6 @@ namespace Adrenak.UniMic {
 
             AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
             Sample = new float[Frequency / 1000 * SampleDurationMS * AudioClip.channels];
-
-            //m_AudioSource.clip = Clip;
 
             StartCoroutine(ReadRawAudio());
 
@@ -183,7 +191,7 @@ namespace Adrenak.UniMic {
             int prevPos = 0;
             float[] temp = new float[Sample.Length];
 
-            while (AudioClip is not null && Microphone.IsRecording(CurrentDeviceName)) {
+            while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
                 bool isNewDataAvailable = true;
 
                 while (isNewDataAvailable) {
