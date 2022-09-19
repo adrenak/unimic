@@ -2,6 +2,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Adrenak.UniMic {
     [RequireComponent(typeof(AudioSource))]
@@ -44,7 +45,7 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// List of all the available Mic devices
         /// </summary>
-        public List<string> Devices { get; private set; }
+        public List<string> Devices => Microphone.devices.ToList();
 
         /// <summary>
         /// Index of the current Mic device in m_Devices
@@ -58,7 +59,7 @@ namespace Adrenak.UniMic {
             get {
                 if (CurrentDeviceIndex < 0 || CurrentDeviceIndex >= Microphone.devices.Length)
                     return string.Empty;
-                return Devices[CurrentDeviceIndex]; 
+                return Devices[CurrentDeviceIndex];
             }
         }
 
@@ -92,7 +93,7 @@ namespace Adrenak.UniMic {
         public static Mic Instance {
             get {
                 if (m_Instance == null)
-                    m_Instance = GameObject.FindObjectOfType<Mic>();
+                    m_Instance = FindObjectOfType<Mic>();
                 if (m_Instance == null) {
                     m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
                     DontDestroyOnLoad(m_Instance.gameObject);
@@ -101,40 +102,54 @@ namespace Adrenak.UniMic {
             }
         }
 
+        // Prevent 'new' keyword construction
+        [Obsolete("Mic is a singleton class. Use Mic.Instance to get the instance", true)]
+        public Mic() { }
+
+        /// <summary>
+        /// ENsures an instance of the class
+        /// </summary>
         public static Mic Instantiate() {
             return Instance;
         }
 
         void Awake() {
-            UpdateDevices();
-            CurrentDeviceIndex = 0;
+            if (Devices.Count > 0)
+                CurrentDeviceIndex = 0;
         }
 
-        public void UpdateDevices() {
-            Devices = new List<string>();
-            foreach (var device in Microphone.devices)
-                Devices.Add(device);
+        [Obsolete("UpdateDevices method has been removed. Devices property is now always up to date", true)]
+        public void UpdateDevices() { }
+
+        /// <summary>
+        /// Sets a Mic device for Recording
+        /// </summary>
+        /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/> for available devices</param>
+        public void SetDeviceIndex(int index) {
+            Microphone.End(CurrentDeviceName);
+            CurrentDeviceIndex = index;
+            if (IsRecording)
+                StartRecording(Frequency, SampleDurationMS);
         }
 
         /// <summary>
         /// Changes to a Mic device for Recording
         /// </summary>
         /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/></param>
+        [Obsolete("ChangeDevice may go away in the future. Use SetDeviceIndex instead", false)]
         public void ChangeDevice(int index) {
-            Microphone.End(CurrentDeviceName);
-            CurrentDeviceIndex = index;
-            StartRecording(Frequency, SampleDurationMS);
+            SetDeviceIndex(index);
         }
 
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        public void StartRecording(int frequency = 16000, int sampleLen = 10) {
+        public void StartRecording(int frequency = 16000, int sampleDurationMS = 10) {
             StopRecording();
             IsRecording = true;
 
             Frequency = frequency;
-            SampleDurationMS = sampleLen;
+            SampleDurationMS = sampleDurationMS;
 
             AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
             Sample = new float[Frequency / 1000 * SampleDurationMS * AudioClip.channels];
