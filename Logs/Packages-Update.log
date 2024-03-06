@@ -112,3 +112,12 @@ The following packages were added:
   com.unity.xr.legacyinputhelpers@2.1.8
 The following packages were removed:
   com.unity.package-manager-ui@2.0.13
+
+=== Tue Feb  6 23:23:33 2024
+
+Packages were changed.
+Update Mode: updateDependencies
+
+The following packages were updated:
+  com.unity.ide.visualstudio from version 2.0.14 to 2.0.15
+  com.unity.ide.vscode from version 1.2.4 to 1.2.5

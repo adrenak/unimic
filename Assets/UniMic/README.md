@@ -18,10 +18,10 @@ The last populated sample of the audio data
 - `SampleDurationMS`
 The duration of the sample segment in milliseconds that the instance maintains and fires in events. 
 
-- `SampleLen`
+- `SampleLength`
 The number of samples in the sample segment
 
-- `Clip`
+- `AudioClip`
 The inner `AudioClip` of the instance
 
 - `Devices`
@@ -33,7 +33,6 @@ The index of the active device in the `Devices` list
 - `CurrentDeviceName`
 The name of the active device
 
-
 ### Events
 - `OnStartRecording`
 Event fired when the instance starts to record the audio
@@ -42,10 +41,15 @@ Event fired when the instance starts to record the audio
 Event fired when the instance stops recording the audio
 
 - `OnSampleReady`
-Event fired when a sample of `SampleLen` has been populated by the instance
+Event fired when a sample of `SampleLength` has been populated by the instance. 
+Includes the sample count.
+
+- `OnTimestampedSampleReady`
+Event fired when a sample of `SampleLength` has been populated by the instance. 
+Includes the timestamp from when the sample was captured.
 
 ### Methods
-- `ChangeDevice` changes the recording device. The method internally restarts the recording process
+- `SetDeviceIndex` changes the recording device. The method internally restarts the recording process
     - `Arguments`
         - `int index` the index of the device in the `Devices` list
     - `Returns`
@@ -55,32 +59,18 @@ Event fired when a sample of `SampleLen` has been populated by the instance
 - `StartRecording` starts the microphone recording
     - `Arguments`
         - `int frequency=16000` the frequency of the inner `AudioClip`
-        - `int sampleLen` the length of a single sample segment that the instance keeps and fires on event
+        - `int sampleDurationMS` the duration of a single sample segment in milliseconds that the instance keeps and fires on event
     - `Returns`
         - `void`
+
+- `ResumeRecording` resumes the microphone recording at the frequency and sampleDurationMS 
 
 - `StopRecording` stops the microphone recording
     - `Returns`
         - `void`
 
-- `GetSpectrumData` provides a block of the microphone input spectrum data.
-    - `Arguments`
-        - `FFTWindow fftWindow` the Fast Fourier Transform window to be used. [Info](https://docs.unity3d.com/ScriptReference/FFTWindow.html)
-        - `int sampleCount` the sample count for the internal `AudioSource.GetSpectrumData` call
-    - `Returns`
-        - `float[]` the spectrum data
-
-- `GetOutputData` provides a block of the microphone input output data.
-    - `Arguments`
-        - `int sampleCount` the sample count for the internal `AudioSource.GetOutputData` call
-    - `Returns`
-        - `float[]` the output data
-
 ## Tips
-Just open the Unity project in Unity5+ and try the demo scene.  
-
-## Soon  
-Ready to use spectrum methods such as for standard octaves
+Just open the Unity project in Unity 2017.4.40f1+ and try the sample scene.  
 
 ## Contact
 [@github](https://www.github.com/adrenak)  

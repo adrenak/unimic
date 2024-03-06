@@ -2,11 +2,9 @@
 
 namespace Adrenak.UniMic {
     /// <summary>
-    /// A simple AudioSource based component
-    /// that just plays what the <see cref="Mic"/>
-    /// is receiving.
-    /// Provides optional feature to start the recording
-    /// itself (as a testing tool)
+    /// A simple AudioSource based component that just plays what 
+    /// the <see cref="Mic"/> instance is receiving.
+    /// Provides optional feature to start the recording by itself (as a testing tool)
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class MicAudioSource : MonoBehaviour {
@@ -23,7 +21,7 @@ namespace Adrenak.UniMic {
             if(startRecordingAutomatically)
                 mic.StartRecording(recordingFrequency, sampleDurationMS);
 
-            mic.OnSampleReady += (index, segment) => {
+            mic.OnTimestampedSampleReady += (index, segment) => {
                 var clip = AudioClip.Create("clip", mic.SampleLength, mic.AudioClip.channels, mic.AudioClip.frequency, false);
                 clip.SetData(segment, 0);
                 audioSource.clip = clip;
