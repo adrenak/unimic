@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Adrenak.UniMic {
-    [RequireComponent(typeof(AudioSource))]
     [ExecuteAlways]
     public class Mic : MonoBehaviour {
         // ================================================
@@ -76,9 +75,18 @@ namespace Adrenak.UniMic {
         public event Action OnStartRecording;
 
         /// <summary>
-        /// Invoked everytime an audio frame is collected. Includes the frame.
+        /// Invoked everytime an audio frame is collected. Includes the frame count.
+        /// NOTE: There isn't much use for the index of a sample. Refer to 
+        /// <see cref="OnTimestampedSampleReady"/> for an event that gives you the
+        /// unix timestamp with a millisecond precision.
         /// </summary>
         public event Action<int, float[]> OnSampleReady;
+
+        /// <summary>
+        /// Invoked everytime an audio sample is collected. Includes the unix timestamp
+        /// from when the sample was captured with a millisecond precision.
+        /// </summary>
+        public event Action<long, float[]> OnTimestampedSampleReady;
 
         /// <summary>
         /// Invoked when the instance stop Recording.
@@ -102,11 +110,11 @@ namespace Adrenak.UniMic {
         }
 
         // Prevent 'new' keyword construction
-        [Obsolete("Mic is a singleton class. Use Mic.Instance to get the instance", true)]
+        [Obsolete("Mic is a MonoBehaviour class. Use Mic.Instance to get the instance", true)]
         public Mic() { }
 
         /// <summary>
-        /// ENsures an instance of the class
+        /// Ensures an instance of the Mic class
         /// </summary>
         public static Mic Instantiate() {
             return Instance;
@@ -118,9 +126,6 @@ namespace Adrenak.UniMic {
             if (Devices.Count > 0)
                 CurrentDeviceIndex = 0;
         }
-       
-        [Obsolete("UpdateDevices method is no longer needed. Devices property is now always up to date")]
-        public void UpdateDevices() { }
 
         /// <summary>
         /// Sets a Mic device for Recording
@@ -131,15 +136,6 @@ namespace Adrenak.UniMic {
             CurrentDeviceIndex = index;
             if (IsRecording)
                 StartRecording(Frequency, SampleDurationMS);
-        }
-
-        /// <summary>
-        /// Changes to a Mic device for Recording
-        /// </summary>
-        /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/></param>
-        [Obsolete("ChangeDevice may go away in the future. Use SetDeviceIndex instead", false)]
-        public void ChangeDevice(int index) {
-            SetDeviceIndex(index);
         }
 
         /// <summary>
@@ -210,6 +206,11 @@ namespace Adrenak.UniMic {
                         m_SampleCount++;
                         OnSampleReady?.Invoke(m_SampleCount, Sample);
 
+                        OnTimestampedSampleReady?.Invoke(
+                            (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds),
+                            Sample
+                        );
+
                         readAbsPos = nextReadAbsPos;
                         isNewDataAvailable = true;
                     }
@@ -220,5 +221,17 @@ namespace Adrenak.UniMic {
             }
         }
         #endregion
+
+        [Obsolete("UpdateDevices method is no longer needed. Devices property is now always up to date")]
+        public void UpdateDevices() { }
+
+        /// <summary>
+        /// Changes to a Mic device for Recording
+        /// </summary>
+        /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/></param>
+        [Obsolete("ChangeDevice may go away in the future. Use SetDeviceIndex instead", false)]
+        public void ChangeDevice(int index) {
+            SetDeviceIndex(index);
+        }
     }
 }
