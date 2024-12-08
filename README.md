@@ -61,7 +61,7 @@ Includes the timestamp from when the sample was captured.
         - `int frequency=16000` the frequency of the inner `AudioClip`
         - `int sampleDurationMS` the duration of a single sample segment in milliseconds that the instance keeps and fires on event
     - `Returns`
-        - `void`
+        - `bool` if the microphone successfully started recording
 
 - `ResumeRecording` resumes the microphone recording at the frequency and sampleDurationMS 
 

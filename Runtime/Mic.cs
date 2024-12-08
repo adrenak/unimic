@@ -57,7 +57,7 @@ namespace Adrenak.UniMic {
         /// </summary>
         public string CurrentDeviceName {
             get {
-                if (CurrentDeviceIndex < 0 || CurrentDeviceIndex >= Microphone.devices.Length)
+                if (CurrentDeviceIndex < 0 || CurrentDeviceIndex >= Devices.Count)
                     return string.Empty;
                 return Devices[CurrentDeviceIndex];
             }
@@ -101,9 +101,9 @@ namespace Adrenak.UniMic {
         static Mic m_Instance;
         public static Mic Instance {
             get {
-                if(m_Instance == null)
+                if (m_Instance == null)
                     m_Instance = FindObjectOfType<Mic>();
-                if (m_Instance == null) 
+                if (m_Instance == null)
                     m_Instance = new GameObject("UniMic.Mic").AddComponent<Mic>();
                 return m_Instance;
             }
@@ -121,8 +121,9 @@ namespace Adrenak.UniMic {
         }
 
         void Awake() {
-            if(Application.isPlaying)
+            if (Application.isPlaying)
                 DontDestroyOnLoad(gameObject);
+
             if (Devices.Count > 0)
                 CurrentDeviceIndex = 0;
         }
@@ -132,9 +133,10 @@ namespace Adrenak.UniMic {
         /// </summary>
         /// <param name="index">The index of the Mic device. Refer to <see cref="Devices"/> for available devices</param>
         public void SetDeviceIndex(int index) {
-            Microphone.End(CurrentDeviceName);
+            bool wasRecording = IsRecording;
+            StopRecording();
             CurrentDeviceIndex = index;
-            if (IsRecording)
+            if(wasRecording)
                 StartRecording(Frequency, SampleDurationMS);
         }
 
@@ -149,19 +151,24 @@ namespace Adrenak.UniMic {
         /// <summary>
         /// Starts to stream the input of the current Mic device
         /// </summary>
-        public void StartRecording(int frequency = 16000, int sampleDurationMS = 10) {
+        public bool StartRecording(int frequency = 16000, int sampleDurationMS = 10) {
             StopRecording();
-            IsRecording = true;
 
             Frequency = frequency;
             SampleDurationMS = sampleDurationMS;
 
             AudioClip = Microphone.Start(CurrentDeviceName, true, 1, Frequency);
+            if (AudioClip == null) {
+                IsRecording = false;
+                return false;
+            }
+
+            IsRecording = true;
+
             Sample = new float[Frequency / 1000 * SampleDurationMS * AudioClip.channels];
 
-            StartCoroutine(ReadRawAudio());
-
             OnStartRecording?.Invoke();
+            return true;
         }
 
         /// <summary>
@@ -176,49 +183,63 @@ namespace Adrenak.UniMic {
             Destroy(AudioClip);
             AudioClip = null;
 
-            StopCoroutine(ReadRawAudio());
-
             OnStopRecording?.Invoke();
         }
 
-        IEnumerator ReadRawAudio() {
-            int loops = 0;
-            int readAbsPos = 0;
-            int prevPos = 0;
-            float[] temp = new float[Sample.Length];
-
-            while (AudioClip != null && Microphone.IsRecording(CurrentDeviceName)) {
-                bool isNewDataAvailable = true;
-
-                while (isNewDataAvailable) {
-                    int currPos = Microphone.GetPosition(CurrentDeviceName);
-                    if (currPos < prevPos)
-                        loops++;
-                    prevPos = currPos;
-
-                    var currAbsPos = loops * AudioClip.samples + currPos;
-                    var nextReadAbsPos = readAbsPos + temp.Length;
-
-                    if (nextReadAbsPos < currAbsPos) {
-                        AudioClip.GetData(temp, readAbsPos % AudioClip.samples);
-
-                        Sample = temp;
-                        m_SampleCount++;
-                        OnSampleReady?.Invoke(m_SampleCount, Sample);
-
-                        OnTimestampedSampleReady?.Invoke(
-                            (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds),
-                            Sample
-                        );
-
-                        readAbsPos = nextReadAbsPos;
-                        isNewDataAvailable = true;
-                    }
-                    else
-                        isNewDataAvailable = false;
-                }
-                yield return null;
+        int currPos;
+        int prevPos = 0;
+        bool didLoop;
+        float[] sample;
+        readonly Queue<float> pcmQueue = new Queue<float>();
+        void Update() {
+            if (!IsRecording) {
+                sample = null;
+                return;
             }
+
+            if(sample == null)
+                sample = new float[Sample.Length];
+
+            currPos = Microphone.GetPosition(CurrentDeviceName);
+            if (currPos == prevPos)
+                return;
+
+            didLoop = currPos < prevPos;
+
+            if (!didLoop) {
+                var samples = new float[currPos - prevPos];
+                AudioClip.GetData(samples, prevPos);
+                foreach (var t in samples)
+                    pcmQueue.Enqueue(t);
+            } else {
+                int lastLoopSampleLen = AudioClip.samples - prevPos - 1;
+                int currLoopSampleLen = currPos + 1;
+                var lastLoopSamples = new float[lastLoopSampleLen];
+                var currLoopSamples = new float[currLoopSampleLen];
+                AudioClip.GetData(lastLoopSamples, prevPos - 1);
+                AudioClip.GetData(currLoopSamples, 0);
+
+                foreach (var sample in lastLoopSamples)
+                    pcmQueue.Enqueue(sample);
+
+                foreach (var sample in currLoopSamples)
+                    pcmQueue.Enqueue(sample);
+            }
+
+            while (pcmQueue.Count >= Sample.Length) {
+                for (int i = 0; i < sample.Length; i++) {
+                    sample[i] = pcmQueue.Dequeue();
+                }
+                Sample = sample;
+                m_SampleCount++;
+                OnSampleReady?.Invoke(m_SampleCount, Sample);
+                OnTimestampedSampleReady?.Invoke(
+                    (long)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds),
+                    Sample
+                );
+            }
+
+            prevPos = currPos;
         }
         #endregion
 
