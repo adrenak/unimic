@@ -38,6 +38,9 @@ namespace Adrenak.UniMic {
 
 				EditorGUILayout.IntField("Device Index", mic.CurrentDeviceIndex);
 				EditorGUILayout.LabelField("Device Name", mic.CurrentDeviceName);
+				Microphone.GetDeviceCaps(mic.CurrentDeviceName, out int min, out int max);
+				EditorGUILayout.IntField("Max Frequency", max);
+				EditorGUILayout.IntField("Min Frequency", min);
 
 				EditorGUILayout.Toggle("Is Recording", mic.IsRecording);
 				EditorGUILayout.IntField("Frequency", mic.Frequency);
