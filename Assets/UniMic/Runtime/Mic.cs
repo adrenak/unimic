@@ -11,6 +11,11 @@ namespace Adrenak.UniMic {
         /// </summary>
         public class Device {
             /// <summary>
+            /// The default duration of the frames in milliseconds
+            /// </summary>
+            const int DEFAULT_FRAME_DURATION_MS = 20;
+
+            /// <summary>
             /// Invoked when the instance starts Recording.
             /// </summary>
             public event Action OnStartRecording;
@@ -49,6 +54,16 @@ namespace Adrenak.UniMic {
             public bool SupportsAnyFrequency =>
                 MaxFrequency == 0 && MinFrequency == 0;
 
+            float volumeMultiplier = 1;
+            /// <summary>
+            /// Multiplies the incoming PCM samples by the given value
+            /// to increase/decrease the volume. Default: 1
+            /// </summary>
+            public float VolumeMultiplier {
+                get => volumeMultiplier;
+                set => volumeMultiplier = value;
+            }
+
             int samplingFrequency;
             /// <summary>
             /// The sampling frequency this device will record at
@@ -62,7 +77,7 @@ namespace Adrenak.UniMic {
                 }
             }
 
-            int frameDurationMS = 50;
+            int frameDurationMS;
             /// <summary>
             /// The duration of the audio frame (in milliseconds) that would be reported by the device.
             /// Note that, for example, setting this value to 50 does not mean you would predictably 
@@ -74,7 +89,7 @@ namespace Adrenak.UniMic {
             public int FrameDurationMS {
                 get => frameDurationMS;
                 private set {
-                    if (frameDurationMS <= 0)
+                    if (value <= 0)
                         throw new Exception("FrameDurationMS cannot be zero or negative");
                     frameDurationMS = value;
                 }
@@ -109,7 +124,7 @@ namespace Adrenak.UniMic {
             /// sampling frequency and given frame duration
             /// </summary>
             /// <param name="frameDurationMS">The audio length of one frame (in MS)</param>
-            public void StartRecording(int frameDurationMS = 20) {
+            public void StartRecording(int frameDurationMS = DEFAULT_FRAME_DURATION_MS) {
                 StartRecording(MaxFrequency, frameDurationMS);
             }
 
@@ -119,7 +134,7 @@ namespace Adrenak.UniMic {
             /// </summary>
             /// <param name="samplingFrequency"></param>
             /// <param name="frameDurationMS"></param>
-            public void StartRecording(int samplingFrequency, int frameDurationMS = 20) {
+            public void StartRecording(int samplingFrequency, int frameDurationMS = DEFAULT_FRAME_DURATION_MS) {
                 Mic.StopRecording(this);
                 SamplingFrequency = samplingFrequency;
                 FrameDurationMS = frameDurationMS;
@@ -145,6 +160,10 @@ namespace Adrenak.UniMic {
                 Mic.IsRecording(this);
 
             internal void BroadcastFrame(int channelCount, float[] pcm) {
+                if(VolumeMultiplier != 1) {
+                    for (int i = 0; i < pcm.Length; i++)
+                        pcm[i] *= VolumeMultiplier;
+                }
                 OnFrameCollected?.Invoke(channelCount, pcm);
             }
         }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using UnityEngine;
 
@@ -10,71 +11,128 @@ namespace Adrenak.UniMic {
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class MicAudioSource : MonoBehaviour {
-        public bool autoStart = true;
-        public int clipLengthMultiplier = 10;
-        public int frameDurationMS = 20;
-        public Mic.Device myDevice;
+        public bool autoStart = false;
+        public Mic.Device Device { get; private set; }
+        public int bufferDurationMS = 200;
+
+        /// <summary>
+        /// If we're expecting 480 values per sample, we want a 
+        /// clip that's much longer than that so we don't end up
+        /// overwriting previous frames before they're played.
+        /// This is because if a Device has a frame duration of 10ms
+        /// while running on 48000Hz, the device need not send one frame
+        /// every 10ms. Several frames may quickly arrive in a 
+        /// single render frame one after the other. On the other
+        /// hand, sometimes there may be gaps between their arrival.
+        /// 
+        /// We make the clip something like a buffer that 
+        /// adds new audio frames before the previous one is done
+        /// playing. To do this, we use a multiplier. The value of the
+        /// multiplier is the closest frame duration multiple
+        /// that gets it just above <see cref="bufferDurationMS"/>
+        /// 
+        /// If the frame duration is greater than the buffer duration,
+        /// we use a multiple of 2.
+        /// 
+        /// The result is a smooth audio playback.
+        /// 
+        /// This adds a delay in starting audio playback and latency.
+        /// The greater the buffer duration, the longer the delay and
+        /// latency would be. But the audio would also be smoother.
+        /// A value of 200 is generally sufficient.
+        /// </summary>
+        int ClipLengthMultiplier {
+            get {
+                if (Device == null)
+                    return 1;
+                if (Device.FrameDurationMS >= bufferDurationMS)
+                    return 2;
+                return bufferDurationMS / Device.FrameDurationMS + 1;
+            }
+        }
 
         AudioClip clip;
         AudioSource audioSource;
+        long receivedFrameCount = 0;
 
-        int count = 0;
-
-        void Start() {
+        void Awake() {
             Mic.Init();
 
             audioSource = gameObject.GetComponent<AudioSource>();
             audioSource.loop = true;
-
-            if (autoStart) {
-                if (Mic.AvailableDevices.Count == 0) {
-                    Debug.Log("There are no recording devices available");
-                    return;
-                }
-                Play(Mic.AvailableDevices[0]);
-            }
+            audioSource.playOnAwake = false;
         }
 
-        // We create an audio clip much longer than the frame length.
-        // This is because frames don't arrive at regular intervals and
-        // we don't want to overwrite the clip while we're still playing
-        // the last frame.
+        void Start() {
+            if (Mic.AvailableDevices.Count == 0) {
+                Debug.Log("There are no recording devices available");
+                return;
+            }
+            SetDevice(Mic.AvailableDevices[0], autoStart);
+        }
+
         void OnStartRecording() {
-            if (clip != null)
-                Destroy(clip);
+            receivedFrameCount = 0;
             clip = AudioClip.Create(
                 "clip",
-                myDevice.FrameLength * clipLengthMultiplier,
-                myDevice.ChannelCount,
-                myDevice.SamplingFrequency,
+                Device.FrameLength * ClipLengthMultiplier,
+                Device.ChannelCount,
+                Device.SamplingFrequency,
                 false
             );
+            var empty = new float[clip.samples];
+            for (int i = 0; i < empty.Length; i++)
+                empty[i] = 0;
+            clip.SetData(empty, 0);
             audioSource.clip = clip;
-            audioSource.Play();
         }
 
-        // Since the clip is longer than the length of samples we're expecting,
-        // we need to set the data at the right place by using an offset
         void OnFrameCollected(int channels, float[] samples) {
-            clip.SetData(samples, (count % clipLengthMultiplier) * samples.Length);
-            count++;
-        }
+            if (clip.SetData(samples, (int)((receivedFrameCount % ClipLengthMultiplier) * samples.Length)))
+                receivedFrameCount++;
+            else 
+                return;
 
-        public void SetDevice(string deviceName) {
-            if(myDevice != null) {
-                myDevice.StopRecording();
-                myDevice.OnStartRecording -= OnStartRecording;
-                myDevice.OnFrameCollected -= OnFrameCollected;
+            if (receivedFrameCount > 0) {
+                if (!audioSource.isPlaying) {
+                    audioSource.timeSamples = 0;
+                    audioSource.Play();
+                }
             }
-            var newDevice = Mic.AvailableDevices.Where(x => x.Name == deviceName).First();
-            Play(newDevice);
         }
 
-        void Play(Mic.Device device) {
-            myDevice = device;
-            myDevice.OnStartRecording += OnStartRecording;
-            myDevice.OnFrameCollected += OnFrameCollected;
-            myDevice.StartRecording(frameDurationMS);
+        void OnStopRecording() {
+            receivedFrameCount = 0;
+            audioSource.Stop();
+            clip = null;
+        }
+
+        public void SetDeviceByName(string deviceName, bool autoStart = false) {
+            var newDevice = Mic.AvailableDevices.Where(x => x.Name == deviceName).First();
+            SetDevice(newDevice, autoStart);
+        }
+
+        public void SetDevice(Mic.Device device, bool autoStart = false) {
+            StopRecording();
+            SetDevice(device, autoStart);
+        }
+
+        public void StartRecording() {
+            if (Device == null)
+                return;
+            Device.OnStartRecording += OnStartRecording;
+            Device.OnFrameCollected += OnFrameCollected;
+            Device.OnStopRecording += OnStopRecording;
+            Device.StartRecording();
+        }
+
+        public void StopRecording() {
+            if (Device == null)
+                return;
+            Device.StopRecording();
+            Device.OnStartRecording -= OnStartRecording;
+            Device.OnFrameCollected -= OnFrameCollected;
+            Device.OnStopRecording -= OnStopRecording;
         }
     }
 
