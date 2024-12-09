@@ -134,7 +134,7 @@ namespace Adrenak.UniMic {
             /// </summary>
             public void StopRecording() {
                 Mic.StopRecording(this);
-                if(IsRecording)
+                if(!IsRecording)
                     OnStopRecording?.Invoke();
             }
 
@@ -162,17 +162,17 @@ namespace Adrenak.UniMic {
         [Obsolete("Mic is a MonoBehaviour class. Use Mic.Instance to get the instance", true)]
         public Mic() { }
 
+        static Mic instance;
         /// <summary>
         /// Initialize the Mic class for use.
         /// </summary>
         public static void Init() {
-            var found = FindObjectOfType<Mic>();
-            if (found != null) return;
+            if (instance != null) return;
 
             var go = new GameObject("UniMic.Mic");
             go.hideFlags = HideFlags.DontSave;
             DontDestroyOnLoad(go);
-            go.AddComponent<Mic>();
+            instance = go.AddComponent<Mic>();
         }
 
         static void StartRecording(Device device) {
