@@ -1,0 +1,195 @@
+{
+  "sitemap": {
+    "fileOptions": {
+      "api/*": {
+        "baseUrl": "https://adrenak.github.io/unimic/",
+        "changefreq": "daily"
+      }
+    },
+    "baseUrl": "https://adrenak.github.io/unimic/",
+    "changefreq": "weekly"
+  },
+  "homepages": [],
+  "source_base_path": "D:/a/unimic/unimic/Documentation",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      },
+      "is_incremental": false
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Mic.Device.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Mic.Device.html",
+          "hash": "Spiwk9Oro6klpQmW7zr8R6aU4BTWkxxqC54xi+plyJU="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Mic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Mic.html",
+          "hash": "Bsu66eqpVnD7CKrbf7d/eb1+nBysGpNt57bTqfI9jf0="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.MicAudioSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.MicAudioSource.html",
+          "hash": "WIS6VyRQm2vGtRWoC7XVFqb12vK1hmfjdnAcsGIsR2Q="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.MicDeviceCell.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.MicDeviceCell.html",
+          "hash": "xPQU+hoPz3yyWOllD6EayLKamjVKmHsN/NEhgx0e0lw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.MicDeviceListSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.MicDeviceListSample.html",
+          "hash": "tDYrUBaAkvNIT1dd+5LamxZpDc8HiUauQVV+cj8dRr4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.html",
+          "hash": "PW4VD+zVbobvuzyWuhrzoehxYa07oiqTJ15MdiNywVw="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.html",
+          "hash": "9ThL37fE9PZhe1zi6BH7aVHb0Zlg3zX47g/l6sRYSgE="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "mnYr44gzJ8isORiz6BHNW5viZoha1fhyz6l8WpJkZAg="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "Ujf8ZsTzazWDPaS++PD6hOZ7IfCIUiJhLNGbVBUS/ZM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "Punfxhy7q716X03RE8AppqkI6b0V3t+LDL5jAzfmuYM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 1,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 7,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: should not trace intermediate info.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

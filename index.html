@@ -1,0 +1,159 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>UniMic | UniMic documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="UniMic | UniMic documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="styles/docfx.vendor.css">
+    <link rel="stylesheet" href="styles/docfx.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <meta property="docfx:navrel" content="toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="index.html">
+                <img id="logo" class="svg" src="logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        <div class="article row grid">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="">
+<h2 id="unimic">UniMic</h2>
+
+<p>A wrapper for Unity&#39;s Microphone class. Proving easy APIs for mic input and management.</p>
+<h2 id="api">API</h2>
+<p>Scripting API page and more documentation coming soon.</p>
+<h3 id="usage">Usage</h3>
+<p><code>Mic.Init()</code> to initialize UniMic</p>
+<p><code>Mic.AvailableDevices</code> to get a list of available <code>Mic.Device</code> objects</p>
+<p>The following API is available in <code>Mic.Device</code>:</p>
+<ul>
+<li><code>DEFAULT_FRAME_DURATION_MS</code> the default length of the frame in milliseconds.</li>
+<li><code>OnStartRecording</code> event fired when the device starts recording</li>
+<li><code>OnFrameCollected</code> event fired when the device has gathered PCM data for one frame of user defined duration. Parameters:<ul>
+<li><code>int, float[]</code> the channel count and PCM float array of the frame</li>
+</ul>
+</li>
+<li><code>OnStopRecording</code> event fired when the device stops recording</li>
+<li><code>Name</code> gets the name of the device</li>
+<li><code>MaxFrequency</code> is the highest sampling frequency supported by the device</li>
+<li><code>MinFrequency</code> is the lowest sampling frequency supported by the device</li>
+<li><code>VolumeMultiplier</code> increases/decreases volume by multiplying PCM samples</li>
+<li><code>SupportsAnyFrequency</code> is true if the recording device supports any sampling frequeny</li>
+<li><code>SamplingFrequency</code> is the user defined frequency at which is device will record</li>
+<li><code>FrameDurationMS</code> is the audio duration of a single PCM frame that this device will report in the <code>OnFrameCollected</code> event</li>
+<li><code>FrameLength</code> is the length of the float PCM array this device will report in the <code>OnFrameCollected</code> event</li>
+<li><code>StartRecoring()</code> starts the device recording at the highest supported sampling frequency and the default frame duration defined by <code>DEFAULT_FRAME_DURATION_MS</code></li>
+<li><code>StartRecording(int frameDurationMS)</code> starts the device recording at the highest supported sampling frequency and the user defined frame duration</li>
+<li><code>StartRecording(int samplingFrequency, int frameDurationMS)</code> starts the device recording at the user defined sampling frequency and frame duration</li>
+<li><code>StopRecording()</code> stops the device recording</li>
+<li><code>IsRecording</code> returns if the device is currently recording audio</li>
+</ul>
+<p><code>MicAudioSource</code> component is available for playing back microphone feed. This class is also a good reference for writing your own code for incoming audio data. This class includes:</p>
+<ul>
+<li><code>autoStart</code> configurable in the editor. Whether the component should automatically start playing back audio from the first device detected</li>
+<li><code>Device</code> is a reference to the device this object it currently playing</li>
+<li><code>bufferDurationMS</code> is the length in milliseconds of the internal audio buffer that the object uses. The value defined here is also the time it would take for playback to start and the latency between audio capture and playback</li>
+<li><code>SetDeviceByName(string deviceName, bool autoStart = false)</code> changes the device this instance is playing. If <code>autoStart</code> is true, it automatically starts playing the audio being captured by the new device.</li>
+<li><code>SetDevice(Mic.Device device, bool autoStart = false)</code> similar to <code>SetDeviceByName</code> except it takes a <code>Mic.Device</code> object as the first parameter. This is recommended over <code>SetDeviceByName</code></li>
+<li><code>StartRecording</code> starts/resumes the recording. A device MUST be registered using <code>SetDevice</code> or <code>SetDeviceByName</code> method before calling this.</li>
+<li><code>StopRecording</code> stops the recording.</li>
+</ul>
+<h2 id="samples">Samples</h2>
+<p>View <code>Basic MicAudioSource Sample</code> for single mic sample<br>View <code>Multiple Mic UI Sample</code> for a more complicated sample that shows all the available mics on a UI and allows you to mute/unmute them.</p>
+<h2 id="note">Note</h2>
+<p>Some Xiaomi phones may prevent side loaded APKs from functioning.<br>There is no AEC (Acoustic Echo Cancelletion). If you&#39;re trying the samples be sure to use headphones to avoid creating a feedback loop.</p>
+<h2 id="contact">Contact</h2>
+<p><a href="https://www.github.com/adrenak">@github</a><br><a href="http://www.vatsalambastha.com">@website</a><br>@discord: <code>adrenak#1934</code></p>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/adrenak/unimic/blob/master/Documentation/index.md/#L1" class="contribution-link">Improve this Doc</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            UniMic documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="styles/docfx.js"></script>
+    <script type="text/javascript" src="styles/main.js"></script>
+  </body>
+</html>

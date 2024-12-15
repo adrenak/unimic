@@ -1,0 +1,567 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Mic.Device
+   | UniMic documentation </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Mic.Device
+   | UniMic documentation ">
+    <meta name="generator" content="docfx 2.59.4.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+        
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first="First" data-prev="Previous" data-next="Next" data-last="Last"></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Adrenak.UniMic.Mic.Device">
+  
+  
+  <h1 id="Adrenak_UniMic_Mic_Device" data-uid="Adrenak.UniMic.Mic.Device" class="text-break">Class Mic.Device
+  </h1>
+  <div class="markdown level0 summary"><p>Provides information and APIs for a single recording device.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Mic.Device</span></div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Adrenak.UniMic.html">Adrenak.UniMic</a></h6>
+  <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
+  <h5 id="Adrenak_UniMic_Mic_Device_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Device</code></pre>
+  </div>
+  <h3 id="properties">Properties
+  </h3>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_ChannelCount_" data-uid="Adrenak.UniMic.Mic.Device.ChannelCount*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_ChannelCount" data-uid="Adrenak.UniMic.Mic.Device.ChannelCount">ChannelCount</h4>
+  <div class="markdown level1 summary"><p>The number of channels the audio is captured into.
+Note that this value is made available ONLY after recording 
+starts and resets to 0 when it stops.
+Also note that depending on the device, channel count can be
+changed while the recording is ongoing use <a class="xref" href="Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_OnFrameCollected">OnFrameCollected</a>
+to react to such changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int ChannelCount { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_FrameDurationMS_" data-uid="Adrenak.UniMic.Mic.Device.FrameDurationMS*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_FrameDurationMS" data-uid="Adrenak.UniMic.Mic.Device.FrameDurationMS">FrameDurationMS</h4>
+  <div class="markdown level1 summary"><p>The duration of the audio frame (in milliseconds) that would be reported by the device.
+Note that, for example, setting this value to 50 does not mean you would predictably 
+receive 20 frames representing 50ms of audio at fixed and regular intervals. 
+Often times, sent multiple may be sent multiple times in a single frame or with the intervals
+between the frames. 
+For playback, consider creating a buffer. See <a class="xref" href="Adrenak.UniMic.MicAudioSource.html">MicAudioSource</a> for references.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int FrameDurationMS { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_FrameLength_" data-uid="Adrenak.UniMic.Mic.Device.FrameLength*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_FrameLength" data-uid="Adrenak.UniMic.Mic.Device.FrameLength">FrameLength</h4>
+  <div class="markdown level1 summary"><p>The length of a single PCM frame array that will be sent
+via <a class="xref" href="Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_OnFrameCollected">OnFrameCollected</a></p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int FrameLength { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_IsRecording_" data-uid="Adrenak.UniMic.Mic.Device.IsRecording*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_IsRecording" data-uid="Adrenak.UniMic.Mic.Device.IsRecording">IsRecording</h4>
+  <div class="markdown level1 summary"><p>Whether this device is currently recording audio</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsRecording { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_MaxFrequency_" data-uid="Adrenak.UniMic.Mic.Device.MaxFrequency*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_MaxFrequency" data-uid="Adrenak.UniMic.Mic.Device.MaxFrequency">MaxFrequency</h4>
+  <div class="markdown level1 summary"><p>The maximum sampling frequency this device supports</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MaxFrequency { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_MinFrequency_" data-uid="Adrenak.UniMic.Mic.Device.MinFrequency*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_MinFrequency" data-uid="Adrenak.UniMic.Mic.Device.MinFrequency">MinFrequency</h4>
+  <div class="markdown level1 summary"><p>The minimum sampling frequency this device supports</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int MinFrequency { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_Name_" data-uid="Adrenak.UniMic.Mic.Device.Name*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_Name" data-uid="Adrenak.UniMic.Mic.Device.Name">Name</h4>
+  <div class="markdown level1 summary"><p>The name of the recording device</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Name { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_SamplingFrequency_" data-uid="Adrenak.UniMic.Mic.Device.SamplingFrequency*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_SamplingFrequency" data-uid="Adrenak.UniMic.Mic.Device.SamplingFrequency">SamplingFrequency</h4>
+  <div class="markdown level1 summary"><p>The sampling frequency this device will record at</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int SamplingFrequency { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_SupportsAnyFrequency_" data-uid="Adrenak.UniMic.Mic.Device.SupportsAnyFrequency*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_SupportsAnyFrequency" data-uid="Adrenak.UniMic.Mic.Device.SupportsAnyFrequency">SupportsAnyFrequency</h4>
+  <div class="markdown level1 summary"><p>If this device is capable of supporting any sampling frequency</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool SupportsAnyFrequency { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_VolumeMultiplier_" data-uid="Adrenak.UniMic.Mic.Device.VolumeMultiplier*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_VolumeMultiplier" data-uid="Adrenak.UniMic.Mic.Device.VolumeMultiplier">VolumeMultiplier</h4>
+  <div class="markdown level1 summary"><p>Multiplies the incoming PCM samples by the given value
+to increase/decrease the volume. Default: 1</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float VolumeMultiplier { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_StartRecording_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_StartRecording_System_Int32_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording(System.Int32)">StartRecording(Int32)</h4>
+  <div class="markdown level1 summary"><p>Start recording audio using this device at the maximum supported
+sampling frequency and given frame duration</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void StartRecording(int frameDurationMS = 20)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">frameDurationMS</span></td>
+        <td><p>The audio length of one frame (in MS)</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_StartRecording_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_StartRecording_System_Int32_System_Int32_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording(System.Int32,System.Int32)">StartRecording(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Start recording audio using this device at the provided sampling frequency
+and frame duration</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void StartRecording(int samplingFrequency, int frameDurationMS = 20)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">samplingFrequency</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">frameDurationMS</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_Mic_Device_StopRecording_" data-uid="Adrenak.UniMic.Mic.Device.StopRecording*"></a>
+  <h4 id="Adrenak_UniMic_Mic_Device_StopRecording" data-uid="Adrenak.UniMic.Mic.Device.StopRecording">StopRecording()</h4>
+  <div class="markdown level1 summary"><p>Stop recording audio</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void StopRecording()</code></pre>
+  </div>
+  <h3 id="events">Events
+  </h3>
+  
+  
+  <h4 id="Adrenak_UniMic_Mic_Device_OnFrameCollected" data-uid="Adrenak.UniMic.Mic.Device.OnFrameCollected">OnFrameCollected</h4>
+  <div class="markdown level1 summary"><p>Invoked everytime an audio sample is collected.
+Params: channel count, float pcm array
+You use the channel count to be able to react
+to it changing</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action&lt;int, float[]&gt; OnFrameCollected</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.Int32</span>, <span class="xref">System.Single</span>[]&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="Adrenak_UniMic_Mic_Device_OnStartRecording" data-uid="Adrenak.UniMic.Mic.Device.OnStartRecording">OnStartRecording</h4>
+  <div class="markdown level1 summary"><p>Invoked when the instance starts Recording.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action OnStartRecording</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <h4 id="Adrenak_UniMic_Mic_Device_OnStopRecording" data-uid="Adrenak.UniMic.Mic.Device.OnStopRecording">OnStopRecording</h4>
+  <div class="markdown level1 summary"><p>Invoked when the instance stop Recording.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public event Action OnStopRecording</code></pre>
+  </div>
+  <h5 class="eventType">Event Type</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Action</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In This Article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            UniMic documentation
+            
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
