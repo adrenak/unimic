@@ -25,7 +25,7 @@ jobs:
         run: docfx Documentation/docfx.json
 
       - name: List generated site files
-        run: dir "../_site"
+        run: dir _site
 
       # Upload the generated documentation
       - name: Upload site artifact
