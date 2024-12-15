@@ -52,7 +52,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.MicAudioSource.html",
-          "hash": "FNpnzRRb0uonx72KBcfX7UX72AmlQbt4FCreMQK/HOE="
+          "hash": "+UxFsV/Paujc46cqVY3dY82puQvl4/ojfEX4BKc1nSc="
         }
       },
       "is_incremental": false,
@@ -148,7 +148,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.html",
-          "hash": "F/nys03dBzTI+JfHBG2nKdSBzyXDNZbzP2oJQyRp+mU="
+          "hash": "/3vn8QOudNI2BdV1EWm9ATejpjMEK53MjHF1HA/zA5E="
         }
       },
       "is_incremental": false,
@@ -173,18 +173,6 @@
         ".html": {
           "relative_path": "index.html",
           "hash": "tsuBn2bNXglAGNhCGvR2vq7k8dCWRxkqQ7Sv/C9kynM="
-        }
-      },
-      "is_incremental": false,
-      "version": ""
-    },
-    {
-      "type": "Conceptual",
-      "source_relative_path": "manual/manual.md",
-      "output": {
-        ".html": {
-          "relative_path": "manual/manual.html",
-          "hash": "vZqOtsqtDaH4Al04hS3zVnb/EDbq5heSFgcXl+av0dg="
         }
       },
       "is_incremental": false,
@@ -217,7 +205,7 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 2,
+          "total_file_count": 1,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
