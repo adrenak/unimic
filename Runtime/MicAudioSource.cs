@@ -1,15 +1,9 @@
-﻿using System.Linq;
-
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Adrenak.UniMic {
     /// <summary>
-    /// A simple AudioSource based component that just plays what 
-    /// the default <see cref="Mic.Device"/> instance is receiving.
-    /// Provides optional feature to start the recording by itself.
-    /// NOTE: This component is pretty basic. Also there isn't much
-    /// use case for playing back what the user is saying. Use this
-    /// class as a reference for your own UniMic usage.
+    /// A wrapper over StreamedAudioSource to play what a <see cref="Mic.Device"/>
+    /// is capturing. 
     /// </summary>
     [RequireComponent(typeof(StreamedAudioSource))]
     public class MicAudioSource : MonoBehaviour {
