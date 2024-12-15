@@ -17,6 +17,11 @@ jobs:
       run: |
         git branch -d upm &> /dev/null || echo upm branch not found
         cp README.md "$PKG_ROOT/README.md"
+        git config --global user.name 'github-bot'
+        git config --global user.email 'github-bot@users.noreply.github.com'
+        git commit -am "Updated package README from root README"
+        git push -f -u origin master
+
         git subtree split -P "$PKG_ROOT" -b upm
         git checkout upm
         if [[ -d "Samples" ]]; then
