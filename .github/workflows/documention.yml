@@ -19,11 +19,7 @@ jobs:
         run: choco install -y docfx
 
       - name: Use README.md as index.md
-        if [[ "$env:OS" == "Windows_NT" ]]; then
-          copy README.md Documentation/index.md
-        else
-          cp README.md Documentation/index.md
-        fi
+        cp README.md Documentation/index.md
 
       - name: Build
         run: docfx Documentation/docfx.json
