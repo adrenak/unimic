@@ -1,0 +1,7 @@
+apiRules:
+- include:
+    uidRegex: ^Adrenak.UniMic
+    type: Namespace
+- exclude:
+    uidRegex: .*
+    type: Namespace
