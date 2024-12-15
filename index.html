@@ -5,9 +5,9 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-    <title>UniMic | UniMic documentation </title>
+    <title>UniMic &#127908; | UniMic documentation </title>
     <meta name="viewport" content="width=device-width">
-    <meta name="title" content="UniMic | UniMic documentation ">
+    <meta name="title" content="UniMic &#127908; | UniMic documentation ">
     <meta name="generator" content="docfx 2.59.4.0">
     
     <link rel="shortcut icon" href="favicon.ico">
@@ -70,52 +70,69 @@
         <div class="article row grid">
           <div class="col-md-10">
             <article class="content wrap" id="_content" data-uid="">
-<h2 id="unimic">UniMic</h2>
+<h2 id="unimic-">UniMic 🎤</h2>
 
-<p>A wrapper for Unity&#39;s Microphone class. Proving easy APIs for mic input and management.</p>
-<h2 id="api">API</h2>
-<p>Scripting API page and more documentation coming soon.</p>
-<h3 id="usage">Usage</h3>
-<p><code>Mic.Init()</code> to initialize UniMic</p>
-<p><code>Mic.AvailableDevices</code> to get a list of available <code>Mic.Device</code> objects</p>
-<p>The following API is available in <code>Mic.Device</code>:</p>
+<p>A wrapper for Unity&#39;s Microphone class.<br>Provides easy APIs for mic input and management.<br>Also includes <code>StreamedAudioSource</code>, a (not Microphone related) class that can be used for playing streaming audio by feeding it incoming audio samples.  </p>
+<h2 id="documentation-">Documentation 📝</h2>
+<p><a href="https://www.vatsalambastha.com/unimic/api/Adrenak.UniMic.html">Refer to the Scripting Reference</a></p>
+<h2 id="installing-">Installing 📦</h2>
+<p>⚠️ <a href="https://openupm.com/packages/com.adrenak.unimic/?subPage=versions">OpenUPM</a> doesn&#39;t have up to date releases. Install using NPM registry instead 👇</p>
+<p>Ensure you have the NPM registry in the <code>packages.json</code> file of your Unity project with <code>com.adrenak.unimic</code> as one of the scopes</p>
+<pre><code>&quot;scopedRegistries&quot;: [
+    {
+        &quot;name&quot;: &quot;npmjs&quot;,
+        &quot;url&quot;: &quot;https://registry.npmjs.org&quot;,
+        &quot;scopes&quot;: [
+            &quot;com.npmjs&quot;,
+            &quot;com.adrenak.unimic&quot;
+        ]
+    }
+}
+</code></pre><p>Add <code>&quot;com.adrenak.unimic&quot; : &quot;x.y.z&quot;</code> to <code>dependencies</code> list in <code>packages.json</code> file where <code>x.y.z</code> is the version name</p>
+<blockquote><p>💬 You can see the versions on the NPM page <a href="https://www.npmjs.com/package/com.adrenak.unimic?activeTab=versions">here</a>.<br>Also note that v3.x.x is recommended. v3 has several breaking changes against v1 and v2. Refer to the scripting reference if you&#39;re upgrading.  </p>
+</blockquote>
+<h2 id="samples-">Samples 🚀</h2>
+<p>Getting started with some samples is the best way to see the features of UniMic, and there are many!</p>
+<p>Ensure that atleast one recording device is connected to your PC/Mac for the samples to work.</p>
+<h3 id="simple-micaudiosource-sample">Simple MicAudioSource Sample</h3>
 <ul>
-<li><code>DEFAULT_FRAME_DURATION_MS</code> the default length of the frame in milliseconds.</li>
-<li><code>OnStartRecording</code> event fired when the device starts recording</li>
-<li><code>OnFrameCollected</code> event fired when the device has gathered PCM data for one frame of user defined duration. Parameters:<ul>
-<li><code>int, float[]</code> the channel count and PCM float array of the frame</li>
+<li>A gameobject called <code>My Mic</code> is placed. It has the <code>MicAudioSource</code> component. </li>
+<li>Another gmeobject called <code>Sample</code> has <code>SimpleMicAudioSourceSample</code><ul>
+<li>On start it checks if there are any mic devices available</li>
+<li>If yes, it takes the first recording device available and starts the recording using <code>.StartRecording()</code></li>
+<li>Then assigns the device to <code>MicAudioSource</code>, which then starts playing the audio</li>
 </ul>
 </li>
-<li><code>OnStopRecording</code> event fired when the device stops recording</li>
-<li><code>Name</code> gets the name of the device</li>
-<li><code>MaxFrequency</code> is the highest sampling frequency supported by the device</li>
-<li><code>MinFrequency</code> is the lowest sampling frequency supported by the device</li>
-<li><code>VolumeMultiplier</code> increases/decreases volume by multiplying PCM samples</li>
-<li><code>SupportsAnyFrequency</code> is true if the recording device supports any sampling frequeny</li>
-<li><code>SamplingFrequency</code> is the user defined frequency at which is device will record</li>
-<li><code>FrameDurationMS</code> is the audio duration of a single PCM frame that this device will report in the <code>OnFrameCollected</code> event</li>
-<li><code>FrameLength</code> is the length of the float PCM array this device will report in the <code>OnFrameCollected</code> event</li>
-<li><code>StartRecoring()</code> starts the device recording at the highest supported sampling frequency and the default frame duration defined by <code>DEFAULT_FRAME_DURATION_MS</code></li>
-<li><code>StartRecording(int frameDurationMS)</code> starts the device recording at the highest supported sampling frequency and the user defined frame duration</li>
-<li><code>StartRecording(int samplingFrequency, int frameDurationMS)</code> starts the device recording at the user defined sampling frequency and frame duration</li>
-<li><code>StopRecording()</code> stops the device recording</li>
-<li><code>IsRecording</code> returns if the device is currently recording audio</li>
+<li>Play the scene. You should be able to hear your voice in the editor</li>
 </ul>
-<p><code>MicAudioSource</code> component is available for playing back microphone feed. This class is also a good reference for writing your own code for incoming audio data. This class includes:</p>
+<h3 id="multiple-micaudiosource-sample">Multiple MicAudioSource Sample</h3>
 <ul>
-<li><code>autoStart</code> configurable in the editor. Whether the component should automatically start playing back audio from the first device detected</li>
-<li><code>Device</code> is a reference to the device this object it currently playing</li>
-<li><code>bufferDurationMS</code> is the length in milliseconds of the internal audio buffer that the object uses. The value defined here is also the time it would take for playback to start and the latency between audio capture and playback</li>
-<li><code>SetDeviceByName(string deviceName, bool autoStart = false)</code> changes the device this instance is playing. If <code>autoStart</code> is true, it automatically starts playing the audio being captured by the new device.</li>
-<li><code>SetDevice(Mic.Device device, bool autoStart = false)</code> similar to <code>SetDeviceByName</code> except it takes a <code>Mic.Device</code> object as the first parameter. This is recommended over <code>SetDeviceByName</code></li>
-<li><code>StartRecording</code> starts/resumes the recording. A device MUST be registered using <code>SetDevice</code> or <code>SetDeviceByName</code> method before calling this.</li>
-<li><code>StopRecording</code> stops the recording.</li>
+<li>Run the scene, you should see every mic device connected <ul>
+<li>On start, all the devices will start recording in parallel and playing back</li>
+<li>Toggling the checkbox on or off will start or stop the recording for a device</li>
 </ul>
-<h2 id="samples">Samples</h2>
-<p>View <code>Basic MicAudioSource Sample</code> for single mic sample<br>View <code>Multiple Mic UI Sample</code> for a more complicated sample that shows all the available mics on a UI and allows you to mute/unmute them.</p>
-<h2 id="note">Note</h2>
-<p>Some Xiaomi phones may prevent side loaded APKs from functioning.<br>There is no AEC (Acoustic Echo Cancelletion). If you&#39;re trying the samples be sure to use headphones to avoid creating a feedback loop.</p>
-<h2 id="contact">Contact</h2>
+</li>
+<li>Prefab <code>MicDeviceCell</code> is used to represent one device. The <code>MicDeviceCell.cs</code> script handles its UI.</li>
+<li>Check out the <code>MultipleMicAudioSourceSample</code> script to see how the UI has been created</li>
+</ul>
+<h3 id="micaudiosource-switch-sample">MicAudioSource Switch Sample</h3>
+<ul>
+<li>Run the scene, recording should start on one device and a dropdown will show all the available recording devices</li>
+<li>Use the dropdown to change to a difference device at runtime</li>
+<li>Check out the <code>MicAudioSourceSwitchSample</code> script to see how the Device of a <code>MicAudioSource</code> can be changed at runtime.</li>
+</ul>
+<h3 id="spatial-blend-sample-for-spatial-audio">Spatial Blend Sample (for spatial audio)</h3>
+<ul>
+<li>Run the scene, the audio source is a moving ball.</li>
+<li>When you speak, your audio is played from the balls position. Use headphones to hear the sound moving.</li>
+<li>Using the slider, you can change the spatial blend from 0 to 1</li>
+</ul>
+<h2 id="note-">Note 📄</h2>
+<ul>
+<li>Some Xiaomi phones may prevent side loaded APKs from functioning.  </li>
+<li>There is no AEC (Acoustic Echo Cancelletion). If you&#39;re trying the samples be sure to use headphones to avoid creating a feedback loop.</li>
+</ul>
+<h2 id="contact-">Contact 👥</h2>
 <p><a href="https://www.github.com/adrenak">@github</a><br><a href="http://www.vatsalambastha.com">@website</a><br>@discord: <code>adrenak#1934</code></p>
 </article>
           </div>

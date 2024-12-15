@@ -91,12 +91,63 @@
     <div class="level0"><span class="xref">System.Object</span></div>
     <div class="level1"><span class="xref">Mic.Device</span></div>
   </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+  </div>
   <h6><strong>Namespace</strong>: <a class="xref" href="Adrenak.UniMic.html">Adrenak.UniMic</a></h6>
   <h6><strong>Assembly</strong>: cs.temp.dll.dll</h6>
   <h5 id="Adrenak_UniMic_Mic_Device_syntax">Syntax</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class Device</code></pre>
   </div>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="Adrenak_UniMic_Mic_Device_DEFAULT_FRAME_DURATION_MS" data-uid="Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS">DEFAULT_FRAME_DURATION_MS</h4>
+  <div class="markdown level1 summary"><p>The default duration of the frames in milliseconds</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int DEFAULT_FRAME_DURATION_MS = 20</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   
@@ -137,8 +188,8 @@ to react to such changes.</p>
   <div class="markdown level1 summary"><p>The duration of the audio frame (in milliseconds) that would be reported by the device.
 Note that, for example, setting this value to 50 does not mean you would predictably 
 receive 20 frames representing 50ms of audio at fixed and regular intervals. 
-Often times, sent multiple may be sent multiple times in a single frame or with the intervals
-between the frames. 
+Often times, sent multiple may be sent multiple times in a single game frame or with 
+varying intervals between the frames. 
 For playback, consider creating a buffer. See <a class="xref" href="Adrenak.UniMic.MicAudioSource.html">MicAudioSource</a> for references.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -296,7 +347,7 @@ via <a class="xref" href="Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Devi
   
   <a id="Adrenak_UniMic_Mic_Device_SamplingFrequency_" data-uid="Adrenak.UniMic.Mic.Device.SamplingFrequency*"></a>
   <h4 id="Adrenak_UniMic_Mic_Device_SamplingFrequency" data-uid="Adrenak.UniMic.Mic.Device.SamplingFrequency">SamplingFrequency</h4>
-  <div class="markdown level1 summary"><p>The sampling frequency this device will record at</p>
+  <div class="markdown level1 summary"><p>The sampling frequency this device is recording at</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -454,14 +505,14 @@ and frame duration</p>
   
   <h4 id="Adrenak_UniMic_Mic_Device_OnFrameCollected" data-uid="Adrenak.UniMic.Mic.Device.OnFrameCollected">OnFrameCollected</h4>
   <div class="markdown level1 summary"><p>Invoked everytime an audio sample is collected.
-Params: channel count, float pcm array
-You use the channel count to be able to react
+Params: (sampling frequency, channel count, PCM samples)
+You use the channel count provided to be able to react
 to it changing</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public event Action&lt;int, float[]&gt; OnFrameCollected</code></pre>
+    <pre><code class="lang-csharp hljs">public event Action&lt;int, int, float[]&gt; OnFrameCollected</code></pre>
   </div>
   <h5 class="eventType">Event Type</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -473,7 +524,7 @@ to it changing</p>
     </thead>
     <tbody>
       <tr>
-        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.Int32</span>, <span class="xref">System.Single</span>[]&gt;</td>
+        <td><span class="xref">System.Action</span>&lt;<span class="xref">System.Int32</span>, <span class="xref">System.Int32</span>, <span class="xref">System.Single</span>[]&gt;</td>
         <td></td>
       </tr>
     </tbody>

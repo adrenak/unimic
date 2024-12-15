@@ -28,7 +28,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.Mic.Device.html",
-          "hash": "Spiwk9Oro6klpQmW7zr8R6aU4BTWkxxqC54xi+plyJU="
+          "hash": "DxHm0eV97DjVMUouvYYdBiZQgTiehDHayxfoaZE25T8="
         }
       },
       "is_incremental": false,
@@ -40,7 +40,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.Mic.html",
-          "hash": "Bsu66eqpVnD7CKrbf7d/eb1+nBysGpNt57bTqfI9jf0="
+          "hash": "04xbWCEoJGAZoX7fzxwv37R+vJJPwcucmCQv8DHCv0E="
         }
       },
       "is_incremental": false,
@@ -52,7 +52,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.MicAudioSource.html",
-          "hash": "WIS6VyRQm2vGtRWoC7XVFqb12vK1hmfjdnAcsGIsR2Q="
+          "hash": "FNpnzRRb0uonx72KBcfX7UX72AmlQbt4FCreMQK/HOE="
         }
       },
       "is_incremental": false,
@@ -72,11 +72,47 @@
     },
     {
       "type": "ManagedReference",
-      "source_relative_path": "api/Adrenak.UniMic.Samples.MicDeviceListSample.yml",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.MicudioSourceSwitchSample.yml",
       "output": {
         ".html": {
-          "relative_path": "api/Adrenak.UniMic.Samples.MicDeviceListSample.html",
-          "hash": "tDYrUBaAkvNIT1dd+5LamxZpDc8HiUauQVV+cj8dRr4="
+          "relative_path": "api/Adrenak.UniMic.Samples.MicudioSourceSwitchSample.html",
+          "hash": "Yz5Ga0RWN2BfBstyz81aXBBVRYfXi9UTfna7zttSKEc="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.MultipleMicAudioSourceSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.MultipleMicAudioSourceSample.html",
+          "hash": "hIqpEAsRRRGCajpqLdSNMnGErhVzPnHTdfw890JAYc4="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.SimpleMicAudioSourceSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.SimpleMicAudioSourceSample.html",
+          "hash": "ApY9L/ow2MB7BvXYUdtvOKHPd8fsHsOgCtXHQLiTA84="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.Samples.SpatialBlendSample.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.Samples.SpatialBlendSample.html",
+          "hash": "7sqyaqCJQoWU6h9sDxuhjr3tRT1OuWaIN63iUbo9MY4="
         }
       },
       "is_incremental": false,
@@ -88,7 +124,19 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.Samples.html",
-          "hash": "PW4VD+zVbobvuzyWuhrzoehxYa07oiqTJ15MdiNywVw="
+          "hash": "eZR6ITqbs9TGFLq5C25vpOqhb1jyRS/RbbwpB2K003c="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Adrenak.UniMic.StreamedAudioSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Adrenak.UniMic.StreamedAudioSource.html",
+          "hash": "hAb6XogFw4vgFHXXtbPm2xPuai7UVP+ZThGJFxdAq1M="
         }
       },
       "is_incremental": false,
@@ -100,7 +148,7 @@
       "output": {
         ".html": {
           "relative_path": "api/Adrenak.UniMic.html",
-          "hash": "9ThL37fE9PZhe1zi6BH7aVHb0Zlg3zX47g/l6sRYSgE="
+          "hash": "F/nys03dBzTI+JfHBG2nKdSBzyXDNZbzP2oJQyRp+mU="
         }
       },
       "is_incremental": false,
@@ -112,7 +160,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "mnYr44gzJ8isORiz6BHNW5viZoha1fhyz6l8WpJkZAg="
+          "hash": "dFmUcxF9OWCq4wsezsFII5+jB8jn4V1S6Lk5IfBkGp0="
         }
       },
       "is_incremental": false,
@@ -124,7 +172,19 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "Ujf8ZsTzazWDPaS++PD6hOZ7IfCIUiJhLNGbVBUS/ZM="
+          "hash": "tsuBn2bNXglAGNhCGvR2vq7k8dCWRxkqQ7Sv/C9kynM="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "manual/manual.md",
+      "output": {
+        ".html": {
+          "relative_path": "manual/manual.html",
+          "hash": "vZqOtsqtDaH4Al04hS3zVnb/EDbq5heSFgcXl+av0dg="
         }
       },
       "is_incremental": false,
@@ -157,13 +217,13 @@
         "ConceptualDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 1,
+          "total_file_count": 2,
           "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": false,
           "incrementalPhase": "build",
-          "total_file_count": 7,
+          "total_file_count": 11,
           "skipped_file_count": 0
         },
         "TocDocumentProcessor": {

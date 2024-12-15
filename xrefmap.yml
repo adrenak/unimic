@@ -58,6 +58,12 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.Mic.Device.ChannelCount
   nameWithType: Mic.Device.ChannelCount
+- uid: Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS
+  name: DEFAULT_FRAME_DURATION_MS
+  href: api/Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_DEFAULT_FRAME_DURATION_MS
+  commentId: F:Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS
+  fullName: Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS
+  nameWithType: Mic.Device.DEFAULT_FRAME_DURATION_MS
 - uid: Adrenak.UniMic.Mic.Device.FrameDurationMS
   name: FrameDurationMS
   href: api/Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_FrameDurationMS
@@ -244,18 +250,6 @@ references:
   commentId: T:Adrenak.UniMic.MicAudioSource
   fullName: Adrenak.UniMic.MicAudioSource
   nameWithType: MicAudioSource
-- uid: Adrenak.UniMic.MicAudioSource.autoStart
-  name: autoStart
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_autoStart
-  commentId: F:Adrenak.UniMic.MicAudioSource.autoStart
-  fullName: Adrenak.UniMic.MicAudioSource.autoStart
-  nameWithType: MicAudioSource.autoStart
-- uid: Adrenak.UniMic.MicAudioSource.bufferDurationMS
-  name: bufferDurationMS
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_bufferDurationMS
-  commentId: F:Adrenak.UniMic.MicAudioSource.bufferDurationMS
-  fullName: Adrenak.UniMic.MicAudioSource.bufferDurationMS
-  nameWithType: MicAudioSource.bufferDurationMS
 - uid: Adrenak.UniMic.MicAudioSource.Device
   name: Device
   href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_Device
@@ -269,58 +263,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.MicAudioSource.Device
   nameWithType: MicAudioSource.Device
-- uid: Adrenak.UniMic.MicAudioSource.SetDevice(Adrenak.UniMic.Mic.Device,System.Boolean)
-  name: SetDevice(Mic.Device, Boolean)
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_SetDevice_Adrenak_UniMic_Mic_Device_System_Boolean_
-  commentId: M:Adrenak.UniMic.MicAudioSource.SetDevice(Adrenak.UniMic.Mic.Device,System.Boolean)
-  fullName: Adrenak.UniMic.MicAudioSource.SetDevice(Adrenak.UniMic.Mic.Device, System.Boolean)
-  nameWithType: MicAudioSource.SetDevice(Mic.Device, Boolean)
-- uid: Adrenak.UniMic.MicAudioSource.SetDevice*
-  name: SetDevice
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_SetDevice_
-  commentId: Overload:Adrenak.UniMic.MicAudioSource.SetDevice
+- uid: Adrenak.UniMic.MicAudioSource.StreamedAudioSource
+  name: StreamedAudioSource
+  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StreamedAudioSource
+  commentId: P:Adrenak.UniMic.MicAudioSource.StreamedAudioSource
+  fullName: Adrenak.UniMic.MicAudioSource.StreamedAudioSource
+  nameWithType: MicAudioSource.StreamedAudioSource
+- uid: Adrenak.UniMic.MicAudioSource.StreamedAudioSource*
+  name: StreamedAudioSource
+  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StreamedAudioSource_
+  commentId: Overload:Adrenak.UniMic.MicAudioSource.StreamedAudioSource
   isSpec: "True"
-  fullName: Adrenak.UniMic.MicAudioSource.SetDevice
-  nameWithType: MicAudioSource.SetDevice
-- uid: Adrenak.UniMic.MicAudioSource.SetDeviceByName(System.String,System.Boolean)
-  name: SetDeviceByName(String, Boolean)
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_SetDeviceByName_System_String_System_Boolean_
-  commentId: M:Adrenak.UniMic.MicAudioSource.SetDeviceByName(System.String,System.Boolean)
-  fullName: Adrenak.UniMic.MicAudioSource.SetDeviceByName(System.String, System.Boolean)
-  nameWithType: MicAudioSource.SetDeviceByName(String, Boolean)
-- uid: Adrenak.UniMic.MicAudioSource.SetDeviceByName*
-  name: SetDeviceByName
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_SetDeviceByName_
-  commentId: Overload:Adrenak.UniMic.MicAudioSource.SetDeviceByName
-  isSpec: "True"
-  fullName: Adrenak.UniMic.MicAudioSource.SetDeviceByName
-  nameWithType: MicAudioSource.SetDeviceByName
-- uid: Adrenak.UniMic.MicAudioSource.StartRecording
-  name: StartRecording()
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StartRecording
-  commentId: M:Adrenak.UniMic.MicAudioSource.StartRecording
-  fullName: Adrenak.UniMic.MicAudioSource.StartRecording()
-  nameWithType: MicAudioSource.StartRecording()
-- uid: Adrenak.UniMic.MicAudioSource.StartRecording*
-  name: StartRecording
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StartRecording_
-  commentId: Overload:Adrenak.UniMic.MicAudioSource.StartRecording
-  isSpec: "True"
-  fullName: Adrenak.UniMic.MicAudioSource.StartRecording
-  nameWithType: MicAudioSource.StartRecording
-- uid: Adrenak.UniMic.MicAudioSource.StopRecording
-  name: StopRecording()
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StopRecording
-  commentId: M:Adrenak.UniMic.MicAudioSource.StopRecording
-  fullName: Adrenak.UniMic.MicAudioSource.StopRecording()
-  nameWithType: MicAudioSource.StopRecording()
-- uid: Adrenak.UniMic.MicAudioSource.StopRecording*
-  name: StopRecording
-  href: api/Adrenak.UniMic.MicAudioSource.html#Adrenak_UniMic_MicAudioSource_StopRecording_
-  commentId: Overload:Adrenak.UniMic.MicAudioSource.StopRecording
-  isSpec: "True"
-  fullName: Adrenak.UniMic.MicAudioSource.StopRecording
-  nameWithType: MicAudioSource.StopRecording
+  fullName: Adrenak.UniMic.MicAudioSource.StreamedAudioSource
+  nameWithType: MicAudioSource.StreamedAudioSource
 - uid: Adrenak.UniMic.Samples
   name: Adrenak.UniMic.Samples
   href: api/Adrenak.UniMic.Samples.html
@@ -390,9 +345,179 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.Samples.MicDeviceCell.SetRMS
   nameWithType: MicDeviceCell.SetRMS
-- uid: Adrenak.UniMic.Samples.MicDeviceListSample
-  name: MicDeviceListSample
-  href: api/Adrenak.UniMic.Samples.MicDeviceListSample.html
-  commentId: T:Adrenak.UniMic.Samples.MicDeviceListSample
-  fullName: Adrenak.UniMic.Samples.MicDeviceListSample
-  nameWithType: MicDeviceListSample
+- uid: Adrenak.UniMic.Samples.MicudioSourceSwitchSample
+  name: MicudioSourceSwitchSample
+  href: api/Adrenak.UniMic.Samples.MicudioSourceSwitchSample.html
+  commentId: T:Adrenak.UniMic.Samples.MicudioSourceSwitchSample
+  fullName: Adrenak.UniMic.Samples.MicudioSourceSwitchSample
+  nameWithType: MicudioSourceSwitchSample
+- uid: Adrenak.UniMic.Samples.MultipleMicAudioSourceSample
+  name: MultipleMicAudioSourceSample
+  href: api/Adrenak.UniMic.Samples.MultipleMicAudioSourceSample.html
+  commentId: T:Adrenak.UniMic.Samples.MultipleMicAudioSourceSample
+  fullName: Adrenak.UniMic.Samples.MultipleMicAudioSourceSample
+  nameWithType: MultipleMicAudioSourceSample
+- uid: Adrenak.UniMic.Samples.SimpleMicAudioSourceSample
+  name: SimpleMicAudioSourceSample
+  href: api/Adrenak.UniMic.Samples.SimpleMicAudioSourceSample.html
+  commentId: T:Adrenak.UniMic.Samples.SimpleMicAudioSourceSample
+  fullName: Adrenak.UniMic.Samples.SimpleMicAudioSourceSample
+  nameWithType: SimpleMicAudioSourceSample
+- uid: Adrenak.UniMic.Samples.SpatialBlendSample
+  name: SpatialBlendSample
+  href: api/Adrenak.UniMic.Samples.SpatialBlendSample.html
+  commentId: T:Adrenak.UniMic.Samples.SpatialBlendSample
+  fullName: Adrenak.UniMic.Samples.SpatialBlendSample
+  nameWithType: SpatialBlendSample
+- uid: Adrenak.UniMic.StreamedAudioSource
+  name: StreamedAudioSource
+  href: api/Adrenak.UniMic.StreamedAudioSource.html
+  commentId: T:Adrenak.UniMic.StreamedAudioSource
+  fullName: Adrenak.UniMic.StreamedAudioSource
+  nameWithType: StreamedAudioSource
+- uid: Adrenak.UniMic.StreamedAudioSource.#ctor
+  name: StreamedAudioSource()
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource__ctor
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.#ctor
+  fullName: Adrenak.UniMic.StreamedAudioSource.StreamedAudioSource()
+  nameWithType: StreamedAudioSource.StreamedAudioSource()
+- uid: Adrenak.UniMic.StreamedAudioSource.#ctor*
+  name: StreamedAudioSource
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource__ctor_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.#ctor
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.StreamedAudioSource
+  nameWithType: StreamedAudioSource.StreamedAudioSource
+- uid: Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
+  name: BufferDurationMS
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_BufferDurationMS
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
+  fullName: Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
+  nameWithType: StreamedAudioSource.BufferDurationMS
+- uid: Adrenak.UniMic.StreamedAudioSource.BufferDurationMS*
+  name: BufferDurationMS
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_BufferDurationMS_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
+  nameWithType: StreamedAudioSource.BufferDurationMS
+- uid: Adrenak.UniMic.StreamedAudioSource.Buffering
+  name: Buffering
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Buffering
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.Buffering
+  fullName: Adrenak.UniMic.StreamedAudioSource.Buffering
+  nameWithType: StreamedAudioSource.Buffering
+- uid: Adrenak.UniMic.StreamedAudioSource.Buffering*
+  name: Buffering
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Buffering_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.Buffering
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.Buffering
+  nameWithType: StreamedAudioSource.Buffering
+- uid: Adrenak.UniMic.StreamedAudioSource.ChannelCount
+  name: ChannelCount
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_ChannelCount
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.ChannelCount
+  fullName: Adrenak.UniMic.StreamedAudioSource.ChannelCount
+  nameWithType: StreamedAudioSource.ChannelCount
+- uid: Adrenak.UniMic.StreamedAudioSource.ChannelCount*
+  name: ChannelCount
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_ChannelCount_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.ChannelCount
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.ChannelCount
+  nameWithType: StreamedAudioSource.ChannelCount
+- uid: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
+  name: Feed(Int32, Int32, Single[])
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
+  name.vb: Feed(Int32, Int32, Single())
+  fullName: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single[])
+  fullName.vb: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single())
+  nameWithType: StreamedAudioSource.Feed(Int32, Int32, Single[])
+  nameWithType.vb: StreamedAudioSource.Feed(Int32, Int32, Single())
+- uid: Adrenak.UniMic.StreamedAudioSource.Feed*
+  name: Feed
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.Feed
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.Feed
+  nameWithType: StreamedAudioSource.Feed
+- uid: Adrenak.UniMic.StreamedAudioSource.IsPlaying
+  name: IsPlaying
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsPlaying
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.IsPlaying
+  fullName: Adrenak.UniMic.StreamedAudioSource.IsPlaying
+  nameWithType: StreamedAudioSource.IsPlaying
+- uid: Adrenak.UniMic.StreamedAudioSource.IsPlaying*
+  name: IsPlaying
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsPlaying_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.IsPlaying
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.IsPlaying
+  nameWithType: StreamedAudioSource.IsPlaying
+- uid: Adrenak.UniMic.StreamedAudioSource.New
+  name: New()
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_New
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.New
+  fullName: Adrenak.UniMic.StreamedAudioSource.New()
+  nameWithType: StreamedAudioSource.New()
+- uid: Adrenak.UniMic.StreamedAudioSource.New*
+  name: New
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_New_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.New
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.New
+  nameWithType: StreamedAudioSource.New
+- uid: Adrenak.UniMic.StreamedAudioSource.Play
+  name: Play()
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Play
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.Play
+  fullName: Adrenak.UniMic.StreamedAudioSource.Play()
+  nameWithType: StreamedAudioSource.Play()
+- uid: Adrenak.UniMic.StreamedAudioSource.Play*
+  name: Play
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Play_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.Play
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.Play
+  nameWithType: StreamedAudioSource.Play
+- uid: Adrenak.UniMic.StreamedAudioSource.SamplingFrequency
+  name: SamplingFrequency
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_SamplingFrequency
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.SamplingFrequency
+  fullName: Adrenak.UniMic.StreamedAudioSource.SamplingFrequency
+  nameWithType: StreamedAudioSource.SamplingFrequency
+- uid: Adrenak.UniMic.StreamedAudioSource.SamplingFrequency*
+  name: SamplingFrequency
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_SamplingFrequency_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.SamplingFrequency
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.SamplingFrequency
+  nameWithType: StreamedAudioSource.SamplingFrequency
+- uid: Adrenak.UniMic.StreamedAudioSource.Stop
+  name: Stop()
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Stop
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.Stop
+  fullName: Adrenak.UniMic.StreamedAudioSource.Stop()
+  nameWithType: StreamedAudioSource.Stop()
+- uid: Adrenak.UniMic.StreamedAudioSource.Stop*
+  name: Stop
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Stop_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.Stop
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.Stop
+  nameWithType: StreamedAudioSource.Stop
+- uid: Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
+  name: UnityAudioSource
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_UnityAudioSource
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
+  fullName: Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
+  nameWithType: StreamedAudioSource.UnityAudioSource
+- uid: Adrenak.UniMic.StreamedAudioSource.UnityAudioSource*
+  name: UnityAudioSource
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_UnityAudioSource_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
+  nameWithType: StreamedAudioSource.UnityAudioSource

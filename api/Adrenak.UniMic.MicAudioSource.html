@@ -84,8 +84,11 @@
   <h1 id="Adrenak_UniMic_MicAudioSource" data-uid="Adrenak.UniMic.MicAudioSource" class="text-break">Class MicAudioSource
   </h1>
   <div class="markdown level0 summary"><p>A simple AudioSource based component that just plays what 
-the <a class="xref" href="Adrenak.UniMic.Mic.html">Mic</a> instance is receiving.
-Provides optional feature to start the recording by itself (as a testing tool)</p>
+the default <a class="xref" href="Adrenak.UniMic.Mic.Device.html">Mic.Device</a> instance is receiving.
+Provides optional feature to start the recording by itself.
+NOTE: This component is pretty basic. Also there isn&apos;t much
+use case for playing back what the user is saying. Use this
+class as a reference for your own UniMic usage.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
@@ -99,56 +102,6 @@ Provides optional feature to start the recording by itself (as a testing tool)</
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">public class MicAudioSource : MonoBehaviour</code></pre>
   </div>
-  <h3 id="fields">Fields
-  </h3>
-  
-  
-  <h4 id="Adrenak_UniMic_MicAudioSource_autoStart" data-uid="Adrenak.UniMic.MicAudioSource.autoStart">autoStart</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool autoStart</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <h4 id="Adrenak_UniMic_MicAudioSource_bufferDurationMS" data-uid="Adrenak.UniMic.MicAudioSource.bufferDurationMS">bufferDurationMS</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int bufferDurationMS</code></pre>
-  </div>
-  <h5 class="fieldValue">Field Value</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.Int32</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
   <h3 id="properties">Properties
   </h3>
   
@@ -159,7 +112,7 @@ Provides optional feature to start the recording by itself (as a testing tool)</
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Mic.Device Device { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public Mic.Device Device { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -176,92 +129,31 @@ Provides optional feature to start the recording by itself (as a testing tool)</
       </tr>
     </tbody>
   </table>
-  <h3 id="methods">Methods
-  </h3>
   
   
-  <a id="Adrenak_UniMic_MicAudioSource_SetDevice_" data-uid="Adrenak.UniMic.MicAudioSource.SetDevice*"></a>
-  <h4 id="Adrenak_UniMic_MicAudioSource_SetDevice_Adrenak_UniMic_Mic_Device_System_Boolean_" data-uid="Adrenak.UniMic.MicAudioSource.SetDevice(Adrenak.UniMic.Mic.Device,System.Boolean)">SetDevice(Mic.Device, Boolean)</h4>
+  <a id="Adrenak_UniMic_MicAudioSource_StreamedAudioSource_" data-uid="Adrenak.UniMic.MicAudioSource.StreamedAudioSource*"></a>
+  <h4 id="Adrenak_UniMic_MicAudioSource_StreamedAudioSource" data-uid="Adrenak.UniMic.MicAudioSource.StreamedAudioSource">StreamedAudioSource</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SetDevice(Mic.Device device, bool autoStart = false)</code></pre>
+    <pre><code class="lang-csharp hljs">public StreamedAudioSource StreamedAudioSource { get; }</code></pre>
   </div>
-  <h5 class="parameters">Parameters</h5>
+  <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
       <tr>
         <th>Type</th>
-        <th>Name</th>
         <th>Description</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="Adrenak.UniMic.Mic.Device.html">Mic.Device</a></td>
-        <td><span class="parametername">device</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">autoStart</span></td>
+        <td><a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html">StreamedAudioSource</a></td>
         <td></td>
       </tr>
     </tbody>
   </table>
-  
-  
-  <a id="Adrenak_UniMic_MicAudioSource_SetDeviceByName_" data-uid="Adrenak.UniMic.MicAudioSource.SetDeviceByName*"></a>
-  <h4 id="Adrenak_UniMic_MicAudioSource_SetDeviceByName_System_String_System_Boolean_" data-uid="Adrenak.UniMic.MicAudioSource.SetDeviceByName(System.String,System.Boolean)">SetDeviceByName(String, Boolean)</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void SetDeviceByName(string deviceName, bool autoStart = false)</code></pre>
-  </div>
-  <h5 class="parameters">Parameters</h5>
-  <table class="table table-bordered table-striped table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Name</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><span class="xref">System.String</span></td>
-        <td><span class="parametername">deviceName</span></td>
-        <td></td>
-      </tr>
-      <tr>
-        <td><span class="xref">System.Boolean</span></td>
-        <td><span class="parametername">autoStart</span></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-  
-  
-  <a id="Adrenak_UniMic_MicAudioSource_StartRecording_" data-uid="Adrenak.UniMic.MicAudioSource.StartRecording*"></a>
-  <h4 id="Adrenak_UniMic_MicAudioSource_StartRecording" data-uid="Adrenak.UniMic.MicAudioSource.StartRecording">StartRecording()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void StartRecording()</code></pre>
-  </div>
-  
-  
-  <a id="Adrenak_UniMic_MicAudioSource_StopRecording_" data-uid="Adrenak.UniMic.MicAudioSource.StopRecording*"></a>
-  <h4 id="Adrenak_UniMic_MicAudioSource_StopRecording" data-uid="Adrenak.UniMic.MicAudioSource.StopRecording">StopRecording()</h4>
-  <div class="markdown level1 summary"></div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="decalaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void StopRecording()</code></pre>
-  </div>
 </article>
           </div>
           
