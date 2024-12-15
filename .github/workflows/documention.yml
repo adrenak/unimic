@@ -19,7 +19,11 @@ jobs:
         run: choco install -y docfx
 
       - name: Use README.md as index.md
-        run: cp README.md Documentation/index.md
+        if [[ "$env:OS" == "Windows_NT" ]]; then
+          copy README.md Documentation/index.md
+        else
+          cp README.md Documentation/index.md
+        fi
 
       - name: Build
         run: docfx Documentation/docfx.json
@@ -53,3 +57,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
           publish_dir: _site
+
+      - name: List generated site files
+        run: dir _site
