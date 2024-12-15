@@ -24,12 +24,15 @@ jobs:
       - name: Build
         run: docfx Documentation/docfx.json
 
+      - name: List generated site files
+        run: dir "../_site"
+
       # Upload the generated documentation
       - name: Upload site artifact
         uses: actions/upload-artifact@v4
         with:
-          name: _site
-          path: _site # Must equals the 'build.dest' value on your docfx.json
+          name: "_site"
+          path: "../_site" # Must equals the 'build.dest' value on your docfx.json
 
   # Deploy the generated documentation to the gh-pages branch
   deploy:
@@ -45,14 +48,11 @@ jobs:
       - name: Download site artifact
         uses: actions/download-artifact@v4
         with:
-          name: _site
+          name: "../_site"
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_branch: gh-pages
-          publish_dir: _site
-
-      - name: List generated site files
-        run: dir _site
+          publish_dir: "../_site"
