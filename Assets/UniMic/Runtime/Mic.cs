@@ -5,6 +5,9 @@ using System.Linq;
 using UnityEngine;
 
 namespace Adrenak.UniMic {
+    /// <summary>
+    /// Provides access to all the recording devices available 
+    /// </summary>
     public class Mic : MonoBehaviour {
         /// <summary>
         /// Provides information and APIs for a single recording device.
@@ -13,7 +16,7 @@ namespace Adrenak.UniMic {
             /// <summary>
             /// The default duration of the frames in milliseconds
             /// </summary>
-            const int DEFAULT_FRAME_DURATION_MS = 20;
+            public const int DEFAULT_FRAME_DURATION_MS = 20;
 
             /// <summary>
             /// Invoked when the instance starts Recording.
@@ -22,11 +25,11 @@ namespace Adrenak.UniMic {
 
             /// <summary>
             /// Invoked everytime an audio sample is collected.
-            /// Params: channel count, float pcm array
-            /// You use the channel count to be able to react
+            /// Params: (sampling frequency, channel count, PCM samples)
+            /// You use the channel count provided to be able to react
             /// to it changing
             /// </summary>
-            public event Action<int, float[]> OnFrameCollected;
+            public event Action<int, int, float[]> OnFrameCollected;
 
             /// <summary>
             /// Invoked when the instance stop Recording.
@@ -66,7 +69,7 @@ namespace Adrenak.UniMic {
 
             int samplingFrequency;
             /// <summary>
-            /// The sampling frequency this device will record at
+            /// The sampling frequency this device is recording at
             /// </summary>
             public int SamplingFrequency {
                 get => samplingFrequency;
@@ -82,8 +85,8 @@ namespace Adrenak.UniMic {
             /// The duration of the audio frame (in milliseconds) that would be reported by the device.
             /// Note that, for example, setting this value to 50 does not mean you would predictably 
             /// receive 20 frames representing 50ms of audio at fixed and regular intervals. 
-            /// Often times, sent multiple may be sent multiple times in a single frame or with the intervals
-            /// between the frames. 
+            /// Often times, sent multiple may be sent multiple times in a single game frame or with 
+            /// varying intervals between the frames. 
             /// For playback, consider creating a buffer. See <see cref="MicAudioSource"/> for references.
             /// </summary>
             public int FrameDurationMS {
@@ -135,12 +138,18 @@ namespace Adrenak.UniMic {
             /// <param name="samplingFrequency"></param>
             /// <param name="frameDurationMS"></param>
             public void StartRecording(int samplingFrequency, int frameDurationMS = DEFAULT_FRAME_DURATION_MS) {
+                // Return if we're already recording at the same value
+                if (SamplingFrequency == samplingFrequency
+                && FrameDurationMS == frameDurationMS
+                && IsRecording)
+                    return;
+
                 Mic.StopRecording(this);
                 SamplingFrequency = samplingFrequency;
                 FrameDurationMS = frameDurationMS;
 
                 Mic.StartRecording(this);
-                if(IsRecording)
+                if (IsRecording)
                     OnStartRecording?.Invoke();
             }
 
@@ -148,8 +157,11 @@ namespace Adrenak.UniMic {
             /// Stop recording audio
             /// </summary>
             public void StopRecording() {
+                // Return if we're not recording
+                if (!IsRecording) return;
+
                 Mic.StopRecording(this);
-                if(!IsRecording)
+                if (!IsRecording)
                     OnStopRecording?.Invoke();
             }
 
@@ -160,22 +172,39 @@ namespace Adrenak.UniMic {
                 Mic.IsRecording(this);
 
             internal void BroadcastFrame(int channelCount, float[] pcm) {
-                if(VolumeMultiplier != 1) {
+                if (VolumeMultiplier != 1) {
                     for (int i = 0; i < pcm.Length; i++)
                         pcm[i] *= VolumeMultiplier;
                 }
-                OnFrameCollected?.Invoke(channelCount, pcm);
+                OnFrameCollected?.Invoke(SamplingFrequency, channelCount, pcm);
             }
         }
 
+        readonly static Dictionary<string, Device> deviceMap = new Dictionary<string, Device>();
         /// <summary>
         /// Gets the available recording devices
         /// </summary>
-        public static List<Device> AvailableDevices =>
-            Microphone.devices.ToList().Select(x => {
-                Microphone.GetDeviceCaps(x, out int max, out int min);
-                return new Device(x, max, min);
-            }).ToList();
+        public static List<Device> AvailableDevices {
+            get {
+                // Add to the map if we've detected a new device
+                var deviceNames = Microphone.devices;
+                foreach (var deviceName in deviceNames) {
+                    if (!deviceMap.ContainsKey(deviceName)) {
+                        Microphone.GetDeviceCaps(deviceName, out int max, out int min);
+                        var device = new Device(deviceName, max, min);
+                        deviceMap.Add(deviceName, device);
+                    }
+                }
+
+                // Remove from the map any device that may have been disconnected
+                var removedDeviceNames = deviceMap.Where(x => !deviceNames.Contains(x.Key));
+                foreach (var removed in removedDeviceNames)
+                    deviceMap.Remove(removed.Key);
+
+                // return the values of the map as a list
+                return deviceMap.Values.ToList();
+            }
+        }
 
         // Prevent 'new' keyword construction
         [Obsolete("Mic is a MonoBehaviour class. Use Mic.Instance to get the instance", true)]
@@ -232,7 +261,7 @@ namespace Adrenak.UniMic {
             if (prevPositions.ContainsKey(device))
                 prevPositions.Remove(device);
 
-            if(pcms.ContainsKey(device)) {
+            if (pcms.ContainsKey(device)) {
                 pcms[device] = null;
                 pcms.Remove(device);
             }
@@ -254,7 +283,7 @@ namespace Adrenak.UniMic {
         int frameLen;
 
         void Update() {
-            foreach(var pair in clips) {
+            foreach (var pair in clips) {
                 device = pair.Key;
                 clip = pair.Value;
                 prevPos = prevPositions[device];
@@ -280,7 +309,8 @@ namespace Adrenak.UniMic {
                     clip.GetData(sample, prevPos);
                     foreach (var t in sample)
                         pcm.Enqueue(t);
-                } else {
+                }
+                else {
                     int lastLoopSampleLen = clip.samples - prevPos - 1;
                     int currLoopSampleLen = pos + 1;
                     var lastLoopSamples = new float[lastLoopSampleLen];

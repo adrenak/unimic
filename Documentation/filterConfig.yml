@@ -3,5 +3,5 @@ apiRules:
     uidRegex: ^Adrenak.UniMic
     type: Namespace
 - exclude:
-    uidRegex: .*
+    uidRegex: ^Adrenak.UniMic.Samples
     type: Namespace
