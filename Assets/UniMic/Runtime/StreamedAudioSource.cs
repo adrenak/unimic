@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using UnityEngine;
 
@@ -12,29 +12,28 @@ namespace Adrenak.UniMic {
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class StreamedAudioSource : MonoBehaviour {
-        int bufferDurationMS = 32;
+        int bufferFactor = 32;
 
         /// <summary>
         /// Determines the duration of the internal buffer. DEFAULT = 32
         /// This value determines the length of the internal AudioClip
-        /// which is sample count (fed in the Feed method) x this value.
+        /// which is = last sample count (fed in the Feed method) x this value.
         /// There's usually no reason to change this. A high value like
         /// 32 will take some more memory but will ensure audio jitters
         /// are minimal.
         /// </summary>
-        public int BufferDurationMS {
-            get => bufferDurationMS;
+        public int BufferFactor {
+            get => bufferFactor;
             set {
                 if (value <= 2)
-                    throw new Exception("BufferDurationMS cannot be 2 or more");
+                    throw new Exception("BufferDurationMS must be 3 or more");
 
-                if(bufferDurationMS != value) {
-                    bufferDurationMS = value;
-                    if(Buffering) {
-                        Stop();
-                        Clip = null;
+                if(bufferFactor != value) {
+                    bufferFactor = value;
+                    bool wasPlaying = IsPlaying;
+                    Stop();
+                    if(wasPlaying)
                         Play();
-                    }
                 }
             }
         }
@@ -58,7 +57,7 @@ namespace Adrenak.UniMic {
         /// Whether this instance is currently paused and buffering
         /// while waiting for more audio before it resumes.
         /// </summary>
-        public bool Buffering => !UnityAudioSource.isPlaying && IsPlaying;
+        public bool IsBuffering => !UnityAudioSource.isPlaying && IsPlaying;
 
         /// <summary>
         /// Provides access to the AudioSource used for playing the audio.
@@ -88,7 +87,7 @@ namespace Adrenak.UniMic {
                 if(clip == null) {
                     clip = AudioClip.Create(
                         "clip",
-                        BufferDurationMS * samplesLen,
+                        BufferFactor * samplesLen,
                         ChannelCount,
                         SamplingFrequency,
                         false
@@ -134,8 +133,8 @@ namespace Adrenak.UniMic {
         /// <param name="frequency">The sampling frequency of the audio</param>
         /// <param name="channels">The number of channels in the audio</param>
         /// <param name="samples">The PCM samples of the audio</param>
-        public void Feed(int frequency, int channels, float[] samples) {
-            if (!IsPlaying) return;
+        public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true) {
+            if (!autoPlayWhenReady && !IsPlaying) return;
 
             receivedFrameCount++;
 
@@ -176,9 +175,13 @@ namespace Adrenak.UniMic {
             // Append the new audio data to the clip
             Clip.SetData(samples, setDataPos);
 
-            // If we're just receive the first two audio data, start playing
-            if (receivedFrameCount == 2)
+            // Playing after receiving just the first audio data can lead to AudioSource
+            // playback being jittery.
+            // So we wait for the first two audio data.
+            if (receivedFrameCount == 2) {
                 UnityAudioSource.Play();
+                IsPlaying = true;
+            }
 
             // If we just set a block of audio samples where we're currently playing, pause
             // to make sure the playback isn't jittery. We unpause later when more
@@ -201,9 +204,8 @@ namespace Adrenak.UniMic {
         /// </summary>
         public void Play() {
             if (IsPlaying) return;
+            Stop();
             IsPlaying = true;
-
-            UnityAudioSource.Play();
         }
 
         /// <summary>
@@ -222,5 +224,14 @@ namespace Adrenak.UniMic {
             UnityAudioSource.Stop();
             Clip = null;
         }
+
+        [Obsolete("Use BufferFactor instead. This property may be removed soon")]
+        public int BufferDurationMS {
+            get => bufferFactor;
+            set => BufferFactor = value;
+        }
+
+        [Obsolete("Use IsBuffering instead. This property may be removed soon")]
+        public bool Buffering => IsBuffering;
     }
 }
