@@ -120,9 +120,35 @@ public StreamedAudioSource()</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_BufferDurationMS_" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferDurationMS*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_BufferDurationMS" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferDurationMS">BufferDurationMS</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use BufferFactor instead. This property may be removed soon&quot;)]
+public int BufferDurationMS { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_BufferFactor_" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_BufferFactor" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor">BufferFactor</h4>
   <div class="markdown level1 summary"><p>Determines the duration of the internal buffer. DEFAULT = 32
 This value determines the length of the internal AudioClip
-which is sample count (fed in the Feed method) x this value.
+which is = last sample count (fed in the Feed method) x this value.
 There&apos;s usually no reason to change this. A high value like
 32 will take some more memory but will ensure audio jitters
 are minimal.</p>
@@ -130,7 +156,7 @@ are minimal.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int BufferDurationMS { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public int BufferFactor { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -151,13 +177,12 @@ are minimal.</p>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Buffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.Buffering*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_Buffering" data-uid="Adrenak.UniMic.StreamedAudioSource.Buffering">Buffering</h4>
-  <div class="markdown level1 summary"><p>Whether this instance is currently paused and buffering
-while waiting for more audio before it resumes.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool Buffering { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use IsBuffering instead. This property may be removed soon&quot;)]
+public bool Buffering { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -196,6 +221,33 @@ while waiting for more audio before it resumes.</p>
     <tbody>
       <tr>
         <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_IsBuffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_IsBuffering" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering">IsBuffering</h4>
+  <div class="markdown level1 summary"><p>Whether this instance is currently paused and buffering
+while waiting for more audio before it resumes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsBuffering { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
         <td></td>
       </tr>
     </tbody>
@@ -289,13 +341,13 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
   
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Feed_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])">Feed(Int32, Int32, Single[])</h4>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___System_Boolean_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)">Feed(Int32, Int32, Single[], Boolean)</h4>
   <div class="markdown level1 summary"><p>Feed audio data for playback</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Feed(int frequency, int channels, float[] samples)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -324,6 +376,11 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
         <td><span class="parametername">samples</span></td>
         <td><p>The PCM samples of the audio</p>
 </td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><span class="parametername">autoPlayWhenReady</span></td>
+        <td></td>
       </tr>
     </tbody>
   </table>

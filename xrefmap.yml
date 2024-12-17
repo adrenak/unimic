@@ -401,6 +401,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.BufferDurationMS
   nameWithType: StreamedAudioSource.BufferDurationMS
+- uid: Adrenak.UniMic.StreamedAudioSource.BufferFactor
+  name: BufferFactor
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_BufferFactor
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.BufferFactor
+  fullName: Adrenak.UniMic.StreamedAudioSource.BufferFactor
+  nameWithType: StreamedAudioSource.BufferFactor
+- uid: Adrenak.UniMic.StreamedAudioSource.BufferFactor*
+  name: BufferFactor
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_BufferFactor_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.BufferFactor
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.BufferFactor
+  nameWithType: StreamedAudioSource.BufferFactor
 - uid: Adrenak.UniMic.StreamedAudioSource.Buffering
   name: Buffering
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Buffering
@@ -427,15 +440,15 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.ChannelCount
   nameWithType: StreamedAudioSource.ChannelCount
-- uid: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
-  name: Feed(Int32, Int32, Single[])
-  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___
-  commentId: M:Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
-  name.vb: Feed(Int32, Int32, Single())
-  fullName: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single[])
-  fullName.vb: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single())
-  nameWithType: StreamedAudioSource.Feed(Int32, Int32, Single[])
-  nameWithType.vb: StreamedAudioSource.Feed(Int32, Int32, Single())
+- uid: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)
+  name: Feed(Int32, Int32, Single[], Boolean)
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___System_Boolean_
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)
+  name.vb: Feed(Int32, Int32, Single(), Boolean)
+  fullName: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single[], System.Boolean)
+  fullName.vb: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single(), System.Boolean)
+  nameWithType: StreamedAudioSource.Feed(Int32, Int32, Single[], Boolean)
+  nameWithType.vb: StreamedAudioSource.Feed(Int32, Int32, Single(), Boolean)
 - uid: Adrenak.UniMic.StreamedAudioSource.Feed*
   name: Feed
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_
@@ -443,6 +456,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.Feed
   nameWithType: StreamedAudioSource.Feed
+- uid: Adrenak.UniMic.StreamedAudioSource.IsBuffering
+  name: IsBuffering
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsBuffering
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.IsBuffering
+  fullName: Adrenak.UniMic.StreamedAudioSource.IsBuffering
+  nameWithType: StreamedAudioSource.IsBuffering
+- uid: Adrenak.UniMic.StreamedAudioSource.IsBuffering*
+  name: IsBuffering
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsBuffering_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.IsBuffering
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.IsBuffering
+  nameWithType: StreamedAudioSource.IsBuffering
 - uid: Adrenak.UniMic.StreamedAudioSource.IsPlaying
   name: IsPlaying
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsPlaying
