@@ -281,7 +281,6 @@ namespace Adrenak.UniMic {
         int prevPos;
         Queue<float> pcm;
         int frameLen;
-
         void Update() {
             foreach (var pair in clips) {
                 device = pair.Key;
@@ -327,7 +326,8 @@ namespace Adrenak.UniMic {
 
                 // Send as many complete frames from the pcm history as possible
                 frameLen = device.SamplingFrequency / 1000 * device.FrameDurationMS * device.ChannelCount;
-                frame = new float[frameLen];
+                if(frame == null || frame.Length != frameLen)
+                    frame = new float[frameLen];
                 while (pcm.Count >= frame.Length) {
                     for (int i = 0; i < frame.Length; i++)
                         frame[i] = pcm.Dequeue();
