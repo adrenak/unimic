@@ -12,7 +12,25 @@ namespace Adrenak.UniMic {
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class StreamedAudioSource : MonoBehaviour {
-        int bufferFactor = 32;
+        /// <summary>
+        /// The number of frames that must be received before playback starts.
+        /// Note that setting this value to 1 will cause playing to begin right after 
+        /// receiving the first audio data, which can lead to playback being jittery.
+        /// A value of 2 or 3 is generally ideal. Also note that higher values will
+        /// lead to increased delay in playback starting.
+        /// </summary>
+        public int FrameCountForPlay {
+            get => frameCountForPlay;
+            set {
+                if (frameCountForPlay <= 0)
+                    throw new Exception("MinFrameCount must be 1 or more");
+                if(frameCountForPlay != value) {
+                    Stop();
+                    frameCountForPlay = value;
+                }
+            }
+        }
+        int frameCountForPlay = 2;
 
         /// <summary>
         /// Determines the duration of the internal buffer. DEFAULT = 32
@@ -28,15 +46,16 @@ namespace Adrenak.UniMic {
                 if (value <= 2)
                     throw new Exception("BufferDurationMS must be 3 or more");
 
-                if(bufferFactor != value) {
+                if (bufferFactor != value) {
                     bufferFactor = value;
                     bool wasPlaying = IsPlaying;
                     Stop();
-                    if(wasPlaying)
+                    if (wasPlaying)
                         Play();
                 }
             }
         }
+        int bufferFactor = 32;
 
         /// <summary>
         /// The sampling frequency of the last samples this instance played
@@ -52,12 +71,6 @@ namespace Adrenak.UniMic {
         /// Whether this instance is currently playing
         /// </summary>
         public bool IsPlaying { get; private set; }
-
-        /// <summary>
-        /// Whether this instance is currently paused and buffering
-        /// while waiting for more audio before it resumes.
-        /// </summary>
-        public bool IsBuffering => !UnityAudioSource.isPlaying && IsPlaying;
 
         /// <summary>
         /// Provides access to the AudioSource used for playing the audio.
@@ -84,7 +97,7 @@ namespace Adrenak.UniMic {
         AudioClip clip;
         AudioClip Clip {
             get {
-                if(clip == null) {
+                if (clip == null) {
                     clip = AudioClip.Create(
                         "clip",
                         BufferFactor * samplesLen,
@@ -101,7 +114,7 @@ namespace Adrenak.UniMic {
                 return clip;
             }
             set {
-                if(value == null) {
+                if (value == null) {
                     Destroy(clip);
                     clip = null;
                 }
@@ -140,7 +153,7 @@ namespace Adrenak.UniMic {
 
             // When we receive the data for the first time, use it 
             // to initialize the fundamental audio parameters
-            if(receivedFrameCount == 1) {
+            if (receivedFrameCount == 1) {
                 ChannelCount = channels;
                 SamplingFrequency = frequency;
                 samplesLen = samples.Length;
@@ -165,38 +178,38 @@ namespace Adrenak.UniMic {
                 }
             }
 
-            // Detect if the audio source has looped and update the absolute playback pos
-            if (UnityAudioSource.timeSamples < lastPlaybackPos) {
-                lastPlaybackPos = UnityAudioSource.timeSamples;
-                playbackLoops++;
-            }
-            absPlaybackPos = playbackLoops * Clip.samples + UnityAudioSource.timeSamples;
-
             // Append the new audio data to the clip
             Clip.SetData(samples, setDataPos);
 
             // Playing after receiving just the first audio data can lead to AudioSource
             // playback being jittery.
             // So we wait for the first two audio data.
-            if (receivedFrameCount == 2) {
+            if (receivedFrameCount == frameCountForPlay) {
                 UnityAudioSource.Play();
                 IsPlaying = true;
             }
 
-            // If we just set a block of audio samples where we're currently playing, pause
-            // to make sure the playback isn't jittery. We unpause later when more
-            // audio data comes in
-            if (absPlaybackPos > absSetDataPos) 
-                UnityAudioSource.Pause();
-
-            // If the playback position is behind the set position and we're not playing,
-            // it means more audio has arrived since we paused. In this case we resume.
-            if (absPlaybackPos < absSetDataPos && !UnityAudioSource.isPlaying) 
-                UnityAudioSource.UnPause();
-
             // Undate the set data positions for the next time this method is invoked
             absSetDataPos += samples.Length;
             setDataPos = (int)(absSetDataPos % Clip.samples);
+        }
+
+        void Update() {
+            if (!IsPlaying) return;
+
+            // Detect if the audio source has looped and update the absolute playback pos
+            if (UnityAudioSource.timeSamples < lastPlaybackPos)
+                playbackLoops++;
+            lastPlaybackPos = UnityAudioSource.timeSamples;
+            absPlaybackPos = playbackLoops * Clip.samples + UnityAudioSource.timeSamples;
+
+            // If the audio play position gets ahead of the last audio set position, we stop
+            // This can happen if the audio arrives with varying latency OR
+            // if the audio has stopped arriving altogether.
+            // In either case, stopping allows us to later go back to a playing state again
+            // once we have 
+            if (absPlaybackPos > absSetDataPos)
+                Stop();
         }
 
         /// <summary>
@@ -225,13 +238,20 @@ namespace Adrenak.UniMic {
             Clip = null;
         }
 
+        #region DEPRECATED
         [Obsolete("Use BufferFactor instead. This property may be removed soon")]
         public int BufferDurationMS {
             get => bufferFactor;
             set => BufferFactor = value;
         }
 
-        [Obsolete("Use IsBuffering instead. This property may be removed soon")]
-        public bool Buffering => IsBuffering;
+        [Obsolete("This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards." +
+        "It may be removed soon.")]
+        public bool Buffering => IsPlaying;
+
+        [Obsolete("This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards." +
+        "It may be removed soon.")]
+        public bool IsBuffering => IsPlaying;
+        #endregion
     }
 }
