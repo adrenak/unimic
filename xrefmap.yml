@@ -456,6 +456,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.Feed
   nameWithType: StreamedAudioSource.Feed
+- uid: Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
+  name: FrameCountForPlay
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
+  fullName: Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
+  nameWithType: StreamedAudioSource.FrameCountForPlay
+- uid: Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay*
+  name: FrameCountForPlay
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
+  nameWithType: StreamedAudioSource.FrameCountForPlay
 - uid: Adrenak.UniMic.StreamedAudioSource.IsBuffering
   name: IsBuffering
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsBuffering

@@ -181,7 +181,7 @@ are minimal.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use IsBuffering instead. This property may be removed soon&quot;)]
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards.It may be removed soon.&quot;)]
 public bool Buffering { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -227,15 +227,44 @@ public bool Buffering { get; }</code></pre>
   </table>
   
   
-  <a id="Adrenak_UniMic_StreamedAudioSource_IsBuffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_IsBuffering" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering">IsBuffering</h4>
-  <div class="markdown level1 summary"><p>Whether this instance is currently paused and buffering
-while waiting for more audio before it resumes.</p>
+  <a id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay_" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay">FrameCountForPlay</h4>
+  <div class="markdown level1 summary"><p>The number of frames that must be received before playback starts.
+Note that setting this value to 1 will cause playing to begin right after 
+receiving the first audio data, which can lead to playback being jittery.
+A value of 2 or 3 is generally ideal. Also note that higher values will
+lead to increased delay in playback starting.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool IsBuffering { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public int FrameCountForPlay { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_IsBuffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_IsBuffering" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering">IsBuffering</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards.It may be removed soon.&quot;)]
+public bool IsBuffering { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
