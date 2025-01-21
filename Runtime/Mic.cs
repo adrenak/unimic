@@ -325,8 +325,8 @@ namespace Adrenak.UniMic {
                 }
 
                 // Send as many complete frames from the pcm history as possible
-                frameLen = device.SamplingFrequency / 1000 * device.FrameDurationMS * device.ChannelCount;
-                if(frame == null || frame.Length != frameLen)
+                frameLen = device.SamplingFrequency * device.FrameDurationMS * device.ChannelCount / 1000;
+                if (frame == null || frame.Length != frameLen)
                     frame = new float[frameLen];
                 while (pcm.Count >= frame.Length) {
                     for (int i = 0; i < frame.Length; i++)
