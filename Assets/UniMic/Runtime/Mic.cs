@@ -75,7 +75,7 @@ namespace Adrenak.UniMic {
                 get => samplingFrequency;
                 private set {
                     if (!SupportsAnyFrequency && value > MaxFrequency || value < MinFrequency)
-                        throw new Exception("Sampling frequency cannot be set out of min and max range");
+                        throw new Exception("Sampling frequency cannot be set outside of min and max range");
                     samplingFrequency = value;
                 }
             }
@@ -115,10 +115,10 @@ namespace Adrenak.UniMic {
             /// </summary>
             public int ChannelCount => GetChannelCount(this);
 
-            internal Device(string name, int maxFrequency, int minFrequency) {
+            internal Device(string name, int minFrequency, int maxFrequency) {
                 Name = name;
-                MaxFrequency = maxFrequency;
                 MinFrequency = minFrequency;
+                MaxFrequency = maxFrequency;
                 samplingFrequency = maxFrequency;
             }
 
@@ -190,8 +190,8 @@ namespace Adrenak.UniMic {
                 var deviceNames = Microphone.devices;
                 foreach (var deviceName in deviceNames) {
                     if (!deviceMap.ContainsKey(deviceName)) {
-                        Microphone.GetDeviceCaps(deviceName, out int max, out int min);
-                        var device = new Device(deviceName, max, min);
+                        Microphone.GetDeviceCaps(deviceName, out int minFreq, out int maxFreq);
+                        var device = new Device(deviceName, minFreq, maxFreq);
                         deviceMap.Add(deviceName, device);
                     }
                 }
