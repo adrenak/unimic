@@ -19,6 +19,12 @@ namespace Adrenak.UniMic {
             public const int DEFAULT_FRAME_DURATION_MS = 20;
 
             /// <summary>
+            /// The default sampling frequency when in uncapped devices that
+            /// support any frequency.
+            /// </summary>
+            public const int DEFAULT_SAMPLING_FREQUENCY = 48000;
+
+            /// <summary>
             /// Invoked when the instance starts Recording.
             /// </summary>
             public event Action OnStartRecording;
@@ -74,7 +80,7 @@ namespace Adrenak.UniMic {
             public int SamplingFrequency {
                 get => samplingFrequency;
                 private set {
-                    if (!SupportsAnyFrequency && value > MaxFrequency || value < MinFrequency)
+                    if (!SupportsAnyFrequency && (value > MaxFrequency || value < MinFrequency))
                         throw new Exception("Sampling frequency cannot be set outside of min and max range");
                     samplingFrequency = value;
                 }
@@ -119,16 +125,17 @@ namespace Adrenak.UniMic {
                 Name = name;
                 MinFrequency = minFrequency;
                 MaxFrequency = maxFrequency;
-                samplingFrequency = maxFrequency;
             }
 
             /// <summary>
-            /// Start recording audio using this device at the maximum supported
-            /// sampling frequency and given frame duration
+            /// Start recording audio using this device. 
+            /// If the device is capped (has a min and max frequency) it starts at the maximum frequency supported.
+            /// If the device isn't capped (supports any frequency) it starts at 48KHz.
+            /// The frameDuration is <see cref="DEFAULT_FRAME_DURATION_MS"/> unless specified.
             /// </summary>
             /// <param name="frameDurationMS">The audio length of one frame (in MS)</param>
             public void StartRecording(int frameDurationMS = DEFAULT_FRAME_DURATION_MS) {
-                StartRecording(MaxFrequency, frameDurationMS);
+                StartRecording(SupportsAnyFrequency ? DEFAULT_SAMPLING_FREQUENCY : MaxFrequency, frameDurationMS);
             }
 
             /// <summary>
@@ -180,12 +187,21 @@ namespace Adrenak.UniMic {
             }
         }
 
+        // ================================================
+
+        const string TAG = "Mic";
+
         readonly static Dictionary<string, Device> deviceMap = new Dictionary<string, Device>();
         /// <summary>
         /// Gets the available recording devices
         /// </summary>
         public static List<Device> AvailableDevices {
             get {
+                // Make sure the Mic class is initialized when we try to get available devices.
+                // It's easy to forget to call Mic.Init()
+                if(instance == null)
+                    Init();
+
                 // Add to the map if we've detected a new device
                 var deviceNames = Microphone.devices;
                 foreach (var deviceName in deviceNames) {
@@ -207,7 +223,7 @@ namespace Adrenak.UniMic {
         }
 
         // Prevent 'new' keyword construction
-        [Obsolete("Mic is a MonoBehaviour class. Use Mic.Instance to get the instance", true)]
+        [Obsolete("Mic is a MonoBehaviour singleton that is created on its own upon usage.", true)]
         public Mic() { }
 
         static Mic instance;
@@ -215,12 +231,16 @@ namespace Adrenak.UniMic {
         /// Initialize the Mic class for use.
         /// </summary>
         public static void Init() {
-            if (instance != null) return;
+            if (instance != null) {
+                Debug.unityLogger.Log(LogType.Warning, TAG, "UniMic.Mic is already initialized. This message is not an error");
+                return;
+            }
 
             var go = new GameObject("UniMic.Mic");
             go.hideFlags = HideFlags.DontSave;
             DontDestroyOnLoad(go);
             instance = go.AddComponent<Mic>();
+            Debug.unityLogger.Log(LogType.Log, TAG, "UniMic.Mic initialized.");
         }
 
         static void StartRecording(Device device) {
