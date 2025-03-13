@@ -148,6 +148,32 @@
       </tr>
     </tbody>
   </table>
+  
+  
+  <h4 id="Adrenak_UniMic_Mic_Device_DEFAULT_SAMPLING_FREQUENCY" data-uid="Adrenak.UniMic.Mic.Device.DEFAULT_SAMPLING_FREQUENCY">DEFAULT_SAMPLING_FREQUENCY</h4>
+  <div class="markdown level1 summary"><p>The default sampling frequency when in uncapped devices that
+support any frequency.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const int DEFAULT_SAMPLING_FREQUENCY = 48000</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   
@@ -428,8 +454,10 @@ to increase/decrease the volume. Default: 1</p>
   
   <a id="Adrenak_UniMic_Mic_Device_StartRecording_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording*"></a>
   <h4 id="Adrenak_UniMic_Mic_Device_StartRecording_System_Int32_" data-uid="Adrenak.UniMic.Mic.Device.StartRecording(System.Int32)">StartRecording(Int32)</h4>
-  <div class="markdown level1 summary"><p>Start recording audio using this device at the maximum supported
-sampling frequency and given frame duration</p>
+  <div class="markdown level1 summary"><p>Start recording audio using this device. 
+If the device is capped (has a min and max frequency) it starts at the maximum frequency supported.
+If the device isn&apos;t capped (supports any frequency) it starts at 48KHz.
+The frameDuration is <a class="xref" href="Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_DEFAULT_FRAME_DURATION_MS">DEFAULT_FRAME_DURATION_MS</a> unless specified.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>

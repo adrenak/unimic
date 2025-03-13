@@ -64,6 +64,12 @@ references:
   commentId: F:Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS
   fullName: Adrenak.UniMic.Mic.Device.DEFAULT_FRAME_DURATION_MS
   nameWithType: Mic.Device.DEFAULT_FRAME_DURATION_MS
+- uid: Adrenak.UniMic.Mic.Device.DEFAULT_SAMPLING_FREQUENCY
+  name: DEFAULT_SAMPLING_FREQUENCY
+  href: api/Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_DEFAULT_SAMPLING_FREQUENCY
+  commentId: F:Adrenak.UniMic.Mic.Device.DEFAULT_SAMPLING_FREQUENCY
+  fullName: Adrenak.UniMic.Mic.Device.DEFAULT_SAMPLING_FREQUENCY
+  nameWithType: Mic.Device.DEFAULT_SAMPLING_FREQUENCY
 - uid: Adrenak.UniMic.Mic.Device.FrameDurationMS
   name: FrameDurationMS
   href: api/Adrenak.UniMic.Mic.Device.html#Adrenak_UniMic_Mic_Device_FrameDurationMS
