@@ -55,7 +55,7 @@ namespace Adrenak.UniMic {
         [SerializeField] float pitchMaxCorrection = 0.15f;
 
         /// <summary>
-        /// Caps pitch adjustment so audio doesn’t sound unnatural
+        /// Caps pitch adjustment so audio doesn't sound unnatural
         /// </summary>
         public float PitchMaxCorrection {
             get => pitchMaxCorrection;
@@ -69,12 +69,12 @@ namespace Adrenak.UniMic {
             clip != null ? clip.samples * 1000 / clip.channels / clip.frequency : 0;
 
         /// <summary>
-        /// Current clip’s sample rate
+        /// Current clip's sample rate
         /// </summary>
         public int SamplingFrequency => clip != null ? clip.frequency : 0;
 
         /// <summary>
-        /// Current clip’s channel count
+        /// Current clip's channel count
         /// </summary>
         public int ChannelCount => clip != null ? clip.channels : 0;
 
