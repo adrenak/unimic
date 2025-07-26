@@ -52,7 +52,7 @@ namespace Adrenak.UniMic {
 
         [Tooltip("Maximum pitch adjustment (as a percentage).")]
         [Range(0f, 0.5f)]
-        public float pitchMaxCorrection = 0.15f;
+        [SerializeField] float pitchMaxCorrection = 0.15f;
 
         /// <summary>
         /// Caps pitch adjustment so audio doesn’t sound unnatural
