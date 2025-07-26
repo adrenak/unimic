@@ -536,12 +536,6 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.New
   nameWithType: StreamedAudioSource.New
-- uid: Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
-  name: pitchMaxCorrection
-  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_pitchMaxCorrection
-  commentId: F:Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
-  fullName: Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
-  nameWithType: StreamedAudioSource.pitchMaxCorrection
 - uid: Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
   name: PitchMaxCorrection
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection
