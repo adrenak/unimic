@@ -1,257 +1,291 @@
-using System;
-
 using UnityEngine;
+using System.Diagnostics;
 
 namespace Adrenak.UniMic {
-    /// <summary>
-    /// Plays back the streaming audio provided to it.
-    /// Automatically adjusts to any changing sampling frequency
-    /// or channel count. Samples of varying lengths can be sent,
-    /// however this could impact performance. Consider keeping
-    /// sample length constant.
-    /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class StreamedAudioSource : MonoBehaviour {
-        /// <summary>
-        /// The number of frames that must be received before playback starts.
-        /// Note that setting this value to 1 will cause playing to begin right after 
-        /// receiving the first audio data, which can lead to playback being jittery.
-        /// A value of 2 or 3 is generally ideal. Also note that higher values will
-        /// lead to increased delay in playback starting.
-        /// </summary>
-        public int FrameCountForPlay {
-            get => frameCountForPlay;
-            set {
-                if (frameCountForPlay <= 0)
-                    throw new Exception("MinFrameCount must be 1 or more");
-                if(frameCountForPlay != value) {
-                    Stop();
-                    frameCountForPlay = value;
-                }
-            }
-        }
-        int frameCountForPlay = 2;
+        [Tooltip("Target playback latency in seconds.")]
+        [SerializeField] float targetLatency = 0.25f;
 
         /// <summary>
-        /// Determines the duration of the internal buffer. DEFAULT = 32
-        /// This value determines the length of the internal AudioClip
-        /// which is = last sample count (fed in the Feed method) x this value.
-        /// There's usually no reason to change this. A high value like
-        /// 32 will take some more memory but will ensure audio jitters
-        /// are minimal.
+        /// Target delay between receiving and playing audio
+        /// </summary>
+        public float TargetLatency {
+            get => targetLatency;
+            set => targetLatency = value;
+        }
+
+        [Tooltip("Maximum age of buffered audio before it's considered stale.")]
+        [Range(0.1f, 0.75f)]
+        [SerializeField] float frameLifetime = 0.5f;
+
+        /// <summary>
+        /// Maximum time to keep audio in buffer before discarding it
+        /// </summary>
+        public float FrameLifetime {
+            get => frameLifetime;
+            set => frameLifetime = value;
+        }
+
+        [Tooltip("The multiplier for the buffer length")]
+        [SerializeField] int bufferFactor = 4;
+
+        /// <summary>
+        /// The multiplier for the buffer length. 
         /// </summary>
         public int BufferFactor {
             get => bufferFactor;
-            set {
-                if (value <= 2)
-                    throw new Exception("BufferDurationMS must be 3 or more");
-
-                if (bufferFactor != value) {
-                    bufferFactor = value;
-                    bool wasPlaying = IsPlaying;
-                    Stop();
-                    if (wasPlaying)
-                        Play();
-                }
-            }
+            set => bufferFactor = value;
         }
-        int bufferFactor = 32;
+
+        [Tooltip("Proportional gain for pitch correction (per second of latency error).")]
+        [Range(0f, 10f)]
+        [SerializeField] float pitchProportionalGain = 1f;
 
         /// <summary>
-        /// The sampling frequency of the last samples this instance played
+        /// Controls how aggressively pitch is adjusted to reach target latency
         /// </summary>
-        public int SamplingFrequency { get; private set; }
+        public float PitchProportionalGame {
+            get => pitchProportionalGain;
+            set => pitchProportionalGain = value;
+        }
+
+        [Tooltip("Maximum pitch adjustment (as a percentage).")]
+        [Range(0f, 0.5f)]
+        public float pitchMaxCorrection = 0.15f;
 
         /// <summary>
-        /// The channel count in the last samples this instance played
+        /// Caps pitch adjustment so audio doesn’t sound unnatural
         /// </summary>
-        public int ChannelCount { get; private set; }
+        public float PitchMaxCorrection {
+            get => pitchMaxCorrection;
+            set => pitchMaxCorrection = value;
+        }
 
         /// <summary>
-        /// Whether this instance is currently playing
+        /// The length of the internal buffer in milliseconds
         /// </summary>
-        public bool IsPlaying { get; private set; }
+        public int BufferDurationMS =>
+            clip != null ? clip.samples * 1000 / clip.channels / clip.frequency : 0;
 
         /// <summary>
-        /// Provides access to the AudioSource used for playing the audio.
-        /// ***WARNING*** Do not invoke play or pause methods on this object.
-        /// The play, pause and unpausing of this <see cref="AudioSource"/> 
-        /// object is done by the <see cref="StreamedAudioSource"/> object
-        /// and doing so from outside will affect playback.
-        /// 
-        /// If you want to start or stop playback, use <see cref="Play"/>
-        /// or <see cref="Stop"/> methods on this object directly.
+        /// Current clip’s sample rate
+        /// </summary>
+        public int SamplingFrequency => clip != null ? clip.frequency : 0;
+
+        /// <summary>
+        /// Current clip’s channel count
+        /// </summary>
+        public int ChannelCount => clip != null ? clip.channels : 0;
+
+        /// <summary>
+        /// Whether playback is currently running
+        /// </summary>
+        public bool IsPlaying => UnityAudioSource.isPlaying;
+
+        /// <summary>
+        /// Whether audio is currently being fed and buffered for playback eventually.
+        /// </summary>
+        public bool IsBuffering { get; private set; }
+
+        /// <summary>
+        /// Accessor for AudioSource with lazy initialization and setup
         /// </summary>
         public AudioSource UnityAudioSource {
             get {
                 if (source == null) {
-                    source = gameObject.GetComponent<AudioSource>();
+                    source = GetComponent<AudioSource>();
                     source.loop = true;
                     source.playOnAwake = false;
+                    source.dopplerLevel = 0;
                 }
                 return source;
             }
         }
-        AudioSource source;
 
-        AudioClip clip;
-        AudioClip Clip {
-            get {
-                if (clip == null) {
-                    clip = AudioClip.Create(
-                        "clip",
-                        BufferFactor * samplesLen,
-                        ChannelCount,
-                        SamplingFrequency,
-                        false
-                    );
-                    var empty = new float[clip.samples];
-                    for (int i = 0; i < empty.Length; i++)
-                        empty[i] = 0;
-                    clip.SetData(empty, 0);
-                    UnityAudioSource.clip = clip;
-                }
-                return clip;
-            }
-            set {
-                if (value == null) {
-                    Destroy(clip);
-                    clip = null;
-                }
-            }
-        }
+        private AudioSource source;
+        private AudioClip clip;
 
-        [Obsolete("new not allowed. Use StreamedAudioSource.New", true)]
+        // Buffering and frame tracking variables
+        private int estimatedClipSamples;
+        private int samplesPerFrame;
+        private float secondsPerFrame;
+
+        // Write pointer and playback tracking
+        private int setDataPos;
+        private long absSetDataPos;
+        private int playbackLoops;
+        private int lastPlaybackPos;
+        private int absPlaybackPos;
+
+        // Timer for frame lifetime checks
+        private readonly Stopwatch frameStopwatch = new Stopwatch();
+        private float TimeSinceLastFrame => (float)frameStopwatch.Elapsed.TotalSeconds;
+        private static readonly object audioWriteLock = new object();
+
+        [System.Obsolete("new not allowed. Use StreamedAudioSource.New", true)]
         public StreamedAudioSource() { }
 
-        public static StreamedAudioSource New() {
-            var go = new GameObject("StreamedAudioSource");
+        public static StreamedAudioSource New(string name = null) {
+            var go = new GameObject(name ?? "StreamedAudioSource");
             go.hideFlags = HideFlags.DontSave;
             DontDestroyOnLoad(go);
             var instance = go.AddComponent<StreamedAudioSource>();
             return instance;
         }
 
-        long receivedFrameCount = 0;
-        int setDataPos;
-        long absSetDataPos;
-        int playbackLoops;
-        int lastPlaybackPos;
-        int absPlaybackPos;
-        int samplesLen;
-
         /// <summary>
-        /// Feed audio data for playback
+        /// Feeds audio into the buffer. Reinitializes format if it changes.
+        /// Starts playback when target latency is reached.
         /// </summary>
-        /// <param name="frequency">The sampling frequency of the audio</param>
-        /// <param name="channels">The number of channels in the audio</param>
-        /// <param name="samples">The PCM samples of the audio</param>
-        public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true) {
-            if (!autoPlayWhenReady && !IsPlaying) return;
+        public void Feed(int frequency, int channels, float[] samples) {
+            if (!gameObject.activeInHierarchy) return;
+            if (!UnityAudioSource.enabled) return;
 
-            receivedFrameCount++;
+            estimatedClipSamples = Mathf.CeilToInt((targetLatency + frameLifetime) * bufferFactor * frequency);
+            samplesPerFrame = samples.Length;
+            secondsPerFrame = (float)samplesPerFrame / frequency;
 
-            // When we receive the data for the first time, use it 
-            // to initialize the fundamental audio parameters
-            if (receivedFrameCount == 1) {
-                ChannelCount = channels;
-                SamplingFrequency = frequency;
-                samplesLen = samples.Length;
-            }
-            // For subsequent data, we check every time if any fundamental
-            // audio parameters have changed and restart if they have
-            else {
-                if (channels != Clip.channels) {
-                    ChannelCount = channels;
-                    Stop();
-                    Play();
-                }
-                if (SamplingFrequency != frequency) {
-                    SamplingFrequency = frequency;
-                    Stop();
-                    Play();
-                }
-                if (samples.Length != samplesLen) {
-                    samplesLen = samples.Length;
-                    Stop();
-                    Play();
-                }
+            // Reinitialize the clip if format or size has changed
+            if (frequency != SamplingFrequency || channels != ChannelCount || clip == null || clip.samples != estimatedClipSamples) {
+                StopPlayback();
+                ReinitClip(estimatedClipSamples, channels, frequency);
             }
 
-            // Append the new audio data to the clip
-            Clip.SetData(samples, setDataPos);
-
-            // Playing after receiving just the first audio data can lead to AudioSource
-            // playback being jittery.
-            // So we wait for the first two audio data.
-            if (receivedFrameCount == frameCountForPlay) {
-                UnityAudioSource.Play();
-                IsPlaying = true;
+            // Write samples into ring buffer
+            lock (audioWriteLock) {
+                clip.SetData(samples, setDataPos);
             }
 
-            // Undate the set data positions for the next time this method is invoked
             absSetDataPos += samples.Length;
-            setDataPos = (int)(absSetDataPos % Clip.samples);
-        }
+            setDataPos = (int)(absSetDataPos % clip.samples);
+            frameStopwatch.Restart();
 
-        void Update() {
-            if (!IsPlaying) return;
+            // Compute buffered duration in seconds
+            float bufferedTimeInSeconds = (float)absSetDataPos / (frequency * channels);
+            if (!IsPlaying)
+                IsBuffering = true;
 
-            // Detect if the audio source has looped and update the absolute playback pos
-            if (UnityAudioSource.timeSamples < lastPlaybackPos)
-                playbackLoops++;
-            lastPlaybackPos = UnityAudioSource.timeSamples;
-            absPlaybackPos = playbackLoops * Clip.samples + UnityAudioSource.timeSamples;
-
-            // If the audio play position gets ahead of the last audio set position, we stop
-            // This can happen if the audio arrives with varying latency OR
-            // if the audio has stopped arriving altogether.
-            // In either case, stopping allows us to later go back to a playing state again
-            // once we have 
-            if (absPlaybackPos > absSetDataPos)
-                Stop();
+            // Start playback once sufficient buffer is accumulated
+            if (bufferedTimeInSeconds >= targetLatency && !IsPlaying) {
+                UnityAudioSource.time = GetWrappedTime((int)(absSetDataPos / samplesPerFrame) - 1);
+                IsBuffering = false;
+                UnityAudioSource.Play();
+            }
         }
 
         /// <summary>
-        /// Start/resume the playback
+        /// Monitors playback position, latency, and handles underruns or staleness.
         /// </summary>
-        public void Play() {
-            if (IsPlaying) return;
-            Stop();
-            IsPlaying = true;
+        private void Update() {
+            if (!IsPlaying) return;
+
+            // Track playback loop and update absolute position
+            int currentSamplePos = UnityAudioSource.timeSamples;
+            if (currentSamplePos < lastPlaybackPos) playbackLoops++;
+            lastPlaybackPos = currentSamplePos;
+            absPlaybackPos = playbackLoops * clip.samples + currentSamplePos;
+
+            // Stop playback if it catches up to write position
+            if (absPlaybackPos > absSetDataPos) {
+                StopPlayback();
+                return;
+            }
+
+            // Apply pitch correction to reach target latency
+            float latency = GetLatency();
+            float error = targetLatency - latency;
+            float response = Mathf.Clamp(-error * pitchProportionalGain, -pitchMaxCorrection, pitchMaxCorrection);
+            UnityAudioSource.pitch = 1f + response;
+
+            // Stop playback if frame data becomes stale
+            if (TimeSinceLastFrame > frameLifetime) {
+                StopPlayback();
+            }
         }
 
         /// <summary>
-        /// Stop/pause the playback
+        /// Computes playback latency with circular buffer wraparound handling.
         /// </summary>
-        public void Stop() {
-            if (!IsPlaying) return;
-            IsPlaying = false;
+        private float GetLatency() {
+            float writeTime = GetWrappedTime((int)(absSetDataPos / samplesPerFrame));
+            float readTime = UnityAudioSource.time;
+            float clipLength = clip.length;
 
-            receivedFrameCount = 0;
+            float latency = writeTime - readTime;
+            if (latency < 0) latency += clipLength;
+            if (clipLength - frameLifetime < latency) latency -= clipLength;
+
+            return latency + TimeSinceLastFrame;
+        }
+
+        /// <summary>
+        /// Converts frame index to playback time, wrapped around clip length.
+        /// </summary>
+        private float GetWrappedTime(int frameIndex) {
+            return frameIndex * secondsPerFrame % clip.length;
+        }
+
+        /// <summary>
+        /// Resets all state and stops playback.
+        /// </summary>
+        private void StopPlayback() {
+            IsBuffering = false;
             setDataPos = 0;
             absSetDataPos = 0;
             playbackLoops = 0;
             lastPlaybackPos = 0;
             absPlaybackPos = 0;
             UnityAudioSource.Stop();
-            Clip = null;
         }
 
-        #region DEPRECATED
-        [Obsolete("Use BufferFactor instead. This property may be removed soon")]
-        public int BufferDurationMS {
-            get => bufferFactor;
-            set => BufferFactor = value;
+        /// <summary>
+        /// Recreates the audio clip with new format settings.
+        /// </summary>
+        private void ReinitClip(int sampleLen, int channels, int frequency) {
+            DestroyClip();
+            CreateClip(sampleLen, channels, frequency);
         }
 
-        [Obsolete("This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards." +
-        "It may be removed soon.")]
-        public bool Buffering => IsPlaying;
+        /// <summary>
+        /// Destroys the current audio clip.
+        /// </summary>
+        private void DestroyClip() {
+            if (clip != null)
+                Destroy(clip);
+            clip = null;
+        }
 
-        [Obsolete("This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards." +
-        "It may be removed soon.")]
-        public bool IsBuffering => IsPlaying;
+        /// <summary>
+        /// Creates a new silent audio clip and assigns it to the AudioSource.
+        /// </summary>
+        private void CreateClip(int sampleLen, int channels, int frequency) {
+            clip = AudioClip.Create("StreamedClip", sampleLen, channels, frequency, false);
+            clip.SetData(new float[sampleLen], 0);
+            UnityAudioSource.clip = clip;
+        }
+
+        #region OBSOLETE
+
+        [System.Obsolete("FrameCountForPlay is no longer supported. Use targetLatency instead to configure buffer size.")]
+        public int FrameCountForPlay { get; set; }
+
+        [System.Obsolete("Feed no longer needs autoPlayWhenReady. Auto play is always on.")]
+        public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true) =>
+            Feed(frequency, channels, samples);
+
+        [System.Obsolete("Play() is no longer supported. Calling this method will do nothing. " +
+            "When enough audio has been buffered the audio will always play automatically.")]
+        public void Play() { }
+
+        [System.Obsolete("Stop() is no longer supported. Calling this method will do nothing. " +
+            "If you want to stop playback, stop calling the Feed method and playback will end automatically when the buffer is cleared. " +
+            "For immediately stopping playback consider setting UnityAudioSource.volume to 0")]
+        public void Stop() { }
+
+        [System.Obsolete("This property has been deprecated. Use IsBuffering instead.")]
+        public bool Buffering => IsBuffering;
+
         #endregion
     }
 }
