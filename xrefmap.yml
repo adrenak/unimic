@@ -446,6 +446,15 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.ChannelCount
   nameWithType: StreamedAudioSource.ChannelCount
+- uid: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
+  name: Feed(Int32, Int32, Single[])
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])
+  name.vb: Feed(Int32, Int32, Single())
+  fullName: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single[])
+  fullName.vb: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32, System.Int32, System.Single())
+  nameWithType: StreamedAudioSource.Feed(Int32, Int32, Single[])
+  nameWithType.vb: StreamedAudioSource.Feed(Int32, Int32, Single())
 - uid: Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)
   name: Feed(Int32, Int32, Single[], Boolean)
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___System_Boolean_
@@ -475,6 +484,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay
   nameWithType: StreamedAudioSource.FrameCountForPlay
+- uid: Adrenak.UniMic.StreamedAudioSource.FrameLifetime
+  name: FrameLifetime
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_FrameLifetime
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.FrameLifetime
+  fullName: Adrenak.UniMic.StreamedAudioSource.FrameLifetime
+  nameWithType: StreamedAudioSource.FrameLifetime
+- uid: Adrenak.UniMic.StreamedAudioSource.FrameLifetime*
+  name: FrameLifetime
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_FrameLifetime_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.FrameLifetime
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.FrameLifetime
+  nameWithType: StreamedAudioSource.FrameLifetime
 - uid: Adrenak.UniMic.StreamedAudioSource.IsBuffering
   name: IsBuffering
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_IsBuffering
@@ -501,12 +523,12 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.IsPlaying
   nameWithType: StreamedAudioSource.IsPlaying
-- uid: Adrenak.UniMic.StreamedAudioSource.New
-  name: New()
-  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_New
-  commentId: M:Adrenak.UniMic.StreamedAudioSource.New
-  fullName: Adrenak.UniMic.StreamedAudioSource.New()
-  nameWithType: StreamedAudioSource.New()
+- uid: Adrenak.UniMic.StreamedAudioSource.New(System.String)
+  name: New(String)
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_New_System_String_
+  commentId: M:Adrenak.UniMic.StreamedAudioSource.New(System.String)
+  fullName: Adrenak.UniMic.StreamedAudioSource.New(System.String)
+  nameWithType: StreamedAudioSource.New(String)
 - uid: Adrenak.UniMic.StreamedAudioSource.New*
   name: New
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_New_
@@ -514,6 +536,38 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.New
   nameWithType: StreamedAudioSource.New
+- uid: Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
+  name: pitchMaxCorrection
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_pitchMaxCorrection
+  commentId: F:Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
+  fullName: Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection
+  nameWithType: StreamedAudioSource.pitchMaxCorrection
+- uid: Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
+  name: PitchMaxCorrection
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
+  fullName: Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
+  nameWithType: StreamedAudioSource.PitchMaxCorrection
+- uid: Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection*
+  name: PitchMaxCorrection
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection
+  nameWithType: StreamedAudioSource.PitchMaxCorrection
+- uid: Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame
+  name: PitchProportionalGame
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame
+  fullName: Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame
+  nameWithType: StreamedAudioSource.PitchProportionalGame
+- uid: Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame*
+  name: PitchProportionalGame
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame
+  nameWithType: StreamedAudioSource.PitchProportionalGame
 - uid: Adrenak.UniMic.StreamedAudioSource.Play
   name: Play()
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Play
@@ -553,6 +607,19 @@ references:
   isSpec: "True"
   fullName: Adrenak.UniMic.StreamedAudioSource.Stop
   nameWithType: StreamedAudioSource.Stop
+- uid: Adrenak.UniMic.StreamedAudioSource.TargetLatency
+  name: TargetLatency
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_TargetLatency
+  commentId: P:Adrenak.UniMic.StreamedAudioSource.TargetLatency
+  fullName: Adrenak.UniMic.StreamedAudioSource.TargetLatency
+  nameWithType: StreamedAudioSource.TargetLatency
+- uid: Adrenak.UniMic.StreamedAudioSource.TargetLatency*
+  name: TargetLatency
+  href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_TargetLatency_
+  commentId: Overload:Adrenak.UniMic.StreamedAudioSource.TargetLatency
+  isSpec: "True"
+  fullName: Adrenak.UniMic.StreamedAudioSource.TargetLatency
+  nameWithType: StreamedAudioSource.TargetLatency
 - uid: Adrenak.UniMic.StreamedAudioSource.UnityAudioSource
   name: UnityAudioSource
   href: api/Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_UnityAudioSource

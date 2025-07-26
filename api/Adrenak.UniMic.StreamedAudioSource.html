@@ -83,12 +83,7 @@
   
   <h1 id="Adrenak_UniMic_StreamedAudioSource" data-uid="Adrenak.UniMic.StreamedAudioSource" class="text-break">Class StreamedAudioSource
   </h1>
-  <div class="markdown level0 summary"><p>Plays back the streaming audio provided to it.
-Automatically adjusts to any changing sampling frequency
-or channel count. Samples of varying lengths can be sent,
-however this could impact performance. Consider keeping
-sample length constant.</p>
-</div>
+  <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
@@ -114,18 +109,44 @@ sample length constant.</p>
     <pre><code class="lang-csharp hljs">[Obsolete(&quot;new not allowed. Use StreamedAudioSource.New&quot;, true)]
 public StreamedAudioSource()</code></pre>
   </div>
+  <h3 id="fields">Fields
+  </h3>
+  
+  
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_pitchMaxCorrection" data-uid="Adrenak.UniMic.StreamedAudioSource.pitchMaxCorrection">pitchMaxCorrection</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float pitchMaxCorrection</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h3 id="properties">Properties
   </h3>
   
   
   <a id="Adrenak_UniMic_StreamedAudioSource_BufferDurationMS_" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferDurationMS*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_BufferDurationMS" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferDurationMS">BufferDurationMS</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The length of the internal buffer in milliseconds</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use BufferFactor instead. This property may be removed soon&quot;)]
-public int BufferDurationMS { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public int BufferDurationMS { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -146,12 +167,7 @@ public int BufferDurationMS { get; set; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_BufferFactor_" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_BufferFactor" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor">BufferFactor</h4>
-  <div class="markdown level1 summary"><p>Determines the duration of the internal buffer. DEFAULT = 32
-This value determines the length of the internal AudioClip
-which is = last sample count (fed in the Feed method) x this value.
-There&apos;s usually no reason to change this. A high value like
-32 will take some more memory but will ensure audio jitters
-are minimal.</p>
+  <div class="markdown level1 summary"><p>The multiplier for the buffer length. </p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -181,7 +197,7 @@ are minimal.</p>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards.It may be removed soon.&quot;)]
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;This property has been deprecated. Use IsBuffering instead.&quot;)]
 public bool Buffering { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -203,7 +219,7 @@ public bool Buffering { get; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_ChannelCount_" data-uid="Adrenak.UniMic.StreamedAudioSource.ChannelCount*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_ChannelCount" data-uid="Adrenak.UniMic.StreamedAudioSource.ChannelCount">ChannelCount</h4>
-  <div class="markdown level1 summary"><p>The channel count in the last samples this instance played</p>
+  <div class="markdown level1 summary"><p>Current clip�s channel count</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -229,16 +245,12 @@ public bool Buffering { get; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay_" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay">FrameCountForPlay</h4>
-  <div class="markdown level1 summary"><p>The number of frames that must be received before playback starts.
-Note that setting this value to 1 will cause playing to begin right after 
-receiving the first audio data, which can lead to playback being jittery.
-A value of 2 or 3 is generally ideal. Also note that higher values will
-lead to increased delay in playback starting.</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int FrameCountForPlay { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;FrameCountForPlay is no longer supported. Use targetLatency instead to configure buffer size.&quot;)]
+public int FrameCountForPlay { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -257,14 +269,40 @@ lead to increased delay in playback starting.</p>
   </table>
   
   
-  <a id="Adrenak_UniMic_StreamedAudioSource_IsBuffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_IsBuffering" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering">IsBuffering</h4>
-  <div class="markdown level1 summary"></div>
+  <a id="Adrenak_UniMic_StreamedAudioSource_FrameLifetime_" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameLifetime*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_FrameLifetime" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameLifetime">FrameLifetime</h4>
+  <div class="markdown level1 summary"><p>Maximum time to keep audio in buffer before discarding it</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Obsolete(&quot;This property has been deprecated and is equivalent to IsPlaying from v3.2.0 onwards.It may be removed soon.&quot;)]
-public bool IsBuffering { get; }</code></pre>
+    <pre><code class="lang-csharp hljs">public float FrameLifetime { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_IsBuffering_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_IsBuffering" data-uid="Adrenak.UniMic.StreamedAudioSource.IsBuffering">IsBuffering</h4>
+  <div class="markdown level1 summary"><p>Whether audio is currently being fed and buffered for playback eventually.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool IsBuffering { get; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -285,7 +323,7 @@ public bool IsBuffering { get; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_IsPlaying_" data-uid="Adrenak.UniMic.StreamedAudioSource.IsPlaying*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_IsPlaying" data-uid="Adrenak.UniMic.StreamedAudioSource.IsPlaying">IsPlaying</h4>
-  <div class="markdown level1 summary"><p>Whether this instance is currently playing</p>
+  <div class="markdown level1 summary"><p>Whether playback is currently running</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -309,9 +347,61 @@ public bool IsBuffering { get; }</code></pre>
   </table>
   
   
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection">PitchMaxCorrection</h4>
+  <div class="markdown level1 summary"><p>Caps pitch adjustment so audio doesn�t sound unnatural</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float PitchMaxCorrection { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame">PitchProportionalGame</h4>
+  <div class="markdown level1 summary"><p>Controls how aggressively pitch is adjusted to reach target latency</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float PitchProportionalGame { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="Adrenak_UniMic_StreamedAudioSource_SamplingFrequency_" data-uid="Adrenak.UniMic.StreamedAudioSource.SamplingFrequency*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_SamplingFrequency" data-uid="Adrenak.UniMic.StreamedAudioSource.SamplingFrequency">SamplingFrequency</h4>
-  <div class="markdown level1 summary"><p>The sampling frequency of the last samples this instance played</p>
+  <div class="markdown level1 summary"><p>Current clip�s sample rate</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -335,15 +425,35 @@ public bool IsBuffering { get; }</code></pre>
   </table>
   
   
+  <a id="Adrenak_UniMic_StreamedAudioSource_TargetLatency_" data-uid="Adrenak.UniMic.StreamedAudioSource.TargetLatency*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_TargetLatency" data-uid="Adrenak.UniMic.StreamedAudioSource.TargetLatency">TargetLatency</h4>
+  <div class="markdown level1 summary"><p>Target delay between receiving and playing audio</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float TargetLatency { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="Adrenak_UniMic_StreamedAudioSource_UnityAudioSource_" data-uid="Adrenak.UniMic.StreamedAudioSource.UnityAudioSource*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_UnityAudioSource" data-uid="Adrenak.UniMic.StreamedAudioSource.UnityAudioSource">UnityAudioSource</h4>
-  <div class="markdown level1 summary"><p>Provides access to the AudioSource used for playing the audio.
-<strong><em>WARNING</em></strong> Do not invoke play or pause methods on this object.
-The play, pause and unpausing of this <see cref="!:AudioSource"></see> 
-object is done by the <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html">StreamedAudioSource</a> object
-and doing so from outside will affect playback.</p>
-<p>If you want to start or stop playback, use <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Play">Play()</a>
-or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_StreamedAudioSource_Stop">Stop()</a> methods on this object directly.</p>
+  <div class="markdown level1 summary"><p>Accessor for AudioSource with lazy initialization and setup</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -370,13 +480,14 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
   
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Feed_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___System_Boolean_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)">Feed(Int32, Int32, Single[], Boolean)</h4>
-  <div class="markdown level1 summary"><p>Feed audio data for playback</p>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])">Feed(Int32, Int32, Single[])</h4>
+  <div class="markdown level1 summary"><p>Feeds audio into the buffer. Reinitializes format if it changes.
+Starts playback when target latency is reached.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Feed(int frequency, int channels, float[] samples)</code></pre>
   </div>
   <h5 class="parameters">Parameters</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -391,20 +502,55 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">frequency</span></td>
-        <td><p>The sampling frequency of the audio</p>
-</td>
+        <td></td>
       </tr>
       <tr>
         <td><span class="xref">System.Int32</span></td>
         <td><span class="parametername">channels</span></td>
-        <td><p>The number of channels in the audio</p>
-</td>
+        <td></td>
       </tr>
       <tr>
         <td><span class="xref">System.Single</span>[]</td>
         <td><span class="parametername">samples</span></td>
-        <td><p>The PCM samples of the audio</p>
-</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_Feed_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___System_Boolean_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[],System.Boolean)">Feed(Int32, Int32, Single[], Boolean)</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Feed no longer needs autoPlayWhenReady. Auto play is always on.&quot;)]
+public void Feed(int frequency, int channels, float[] samples, bool autoPlayWhenReady = true)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">frequency</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">channels</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Single</span>[]</td>
+        <td><span class="parametername">samples</span></td>
+        <td></td>
       </tr>
       <tr>
         <td><span class="xref">System.Boolean</span></td>
@@ -416,13 +562,30 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
   
   
   <a id="Adrenak_UniMic_StreamedAudioSource_New_" data-uid="Adrenak.UniMic.StreamedAudioSource.New*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_New" data-uid="Adrenak.UniMic.StreamedAudioSource.New">New()</h4>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_New_System_String_" data-uid="Adrenak.UniMic.StreamedAudioSource.New(System.String)">New(String)</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static StreamedAudioSource New()</code></pre>
+    <pre><code class="lang-csharp hljs">public static StreamedAudioSource New(string name = null)</code></pre>
   </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">name</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
   <h5 class="returns">Returns</h5>
   <table class="table table-bordered table-striped table-condensed">
     <thead>
@@ -442,23 +605,23 @@ or <a class="xref" href="Adrenak.UniMic.StreamedAudioSource.html#Adrenak_UniMic_
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Play_" data-uid="Adrenak.UniMic.StreamedAudioSource.Play*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_Play" data-uid="Adrenak.UniMic.StreamedAudioSource.Play">Play()</h4>
-  <div class="markdown level1 summary"><p>Start/resume the playback</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Play()</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Play() is no longer supported. Calling this method will do nothing. When enough audio has been buffered the audio will always play automatically.&quot;)]
+public void Play()</code></pre>
   </div>
   
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Stop_" data-uid="Adrenak.UniMic.StreamedAudioSource.Stop*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_Stop" data-uid="Adrenak.UniMic.StreamedAudioSource.Stop">Stop()</h4>
-  <div class="markdown level1 summary"><p>Stop/pause the playback</p>
-</div>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Stop()</code></pre>
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Stop() is no longer supported. Calling this method will do nothing. If you want to stop playback, stop calling the Feed method and playback will end automatically when the buffer is cleared. For immediately stopping playback consider setting UnityAudioSource.volume to 0&quot;)]
+public void Stop()</code></pre>
   </div>
 </article>
           </div>
