@@ -12,24 +12,14 @@ namespace Adrenak.UniMic {
             get => device;
             set {
                 if (device != null) {
-                    device.OnStartRecording -= OnStartRecording;
                     device.OnFrameCollected -= OnFrameCollected;
-                    device.OnStopRecording -= OnStopRecording;
                     Debug.Log("Device removed from MicAudioSource", gameObject);
                 }
-                if(value != null) {
+                if (value != null) {
                     device = value;
-                    device.OnStartRecording += OnStartRecording;
                     device.OnFrameCollected += OnFrameCollected;
-                    device.OnStopRecording += OnStopRecording;
-                    if (device.IsRecording)
-                        StreamedAudioSource.Play();
-                    else
-                        StreamedAudioSource.Stop();
                     Debug.Log("MicAudioSource shifted to " + device.Name, gameObject);
                 }
-                else
-                    StreamedAudioSource.Stop();
             }
         }
 
@@ -44,16 +34,8 @@ namespace Adrenak.UniMic {
             }
         }
 
-        void OnStartRecording() {
-            StreamedAudioSource.Play();
-        }
-
         void OnFrameCollected(int frequency, int channels, float[] samples) {
             StreamedAudioSource.Feed(frequency, channels, samples);
-        }
-
-        void OnStopRecording() {
-            StreamedAudioSource.Stop();
         }
     }
 }
