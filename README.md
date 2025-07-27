@@ -61,6 +61,9 @@ Ensure that atleast one recording device is connected to your PC/Mac for the sam
 * Some Xiaomi phones may prevent side loaded APKs from functioning.  
 * There is no AEC (Acoustic Echo Cancelletion). If you're trying the samples be sure to use headphones to avoid creating a feedback loop.
 
+## Credits
+Many thanks to [Metater](https://www.github.com/metater)'s repository [MetaVoiceChat](https://github.com/Metater/MetaVoiceChat) and our chat over Discord to help create pitch gain, audio frame lifetime/expiry and other improvements to `StreamedAudioSource.cs` in [version 3.3.0](https://www.npmjs.com/package/com.adrenak.unimic/v/3.3.0)
+
 ## Contact 👥
 [@github](https://www.github.com/adrenak)  
 [@website](http://www.vatsalambastha.com)  
