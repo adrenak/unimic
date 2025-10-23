@@ -81,7 +81,8 @@ namespace Adrenak.UniMic {
                 get => samplingFrequency;
                 private set {
                     if (!SupportsAnyFrequency && (value > MaxFrequency || value < MinFrequency))
-                        throw new Exception("Sampling frequency cannot be set outside of min and max range");
+                        throw new Exception($"Sampling frequency cannot be set to {value} " +
+                        $"which is outside of [min, max] range [{MinFrequency}, {MaxFrequency}]");
                     samplingFrequency = value;
                 }
             }

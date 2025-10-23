@@ -4,69 +4,124 @@ using System.Diagnostics;
 namespace Adrenak.UniMic {
     [RequireComponent(typeof(AudioSource))]
     public class StreamedAudioSource : MonoBehaviour {
-        [Tooltip("Target playback latency in seconds.")]
+        [Tooltip("Desired steady-state playback latency (seconds).")]
         [SerializeField] float targetLatency = 0.25f;
-
         /// <summary>
-        /// Target delay between receiving and playing audio
+        /// Desired steady-state playback latency (seconds).
         /// </summary>
         public float TargetLatency {
             get => targetLatency;
             set => targetLatency = value;
         }
 
-        [Tooltip("Maximum age of buffered audio before it's considered stale.")]
+        [Tooltip("If no new frame arrives for longer than this, stop playback (seconds).")]
         [Range(0.1f, 0.75f)]
         [SerializeField] float frameLifetime = 0.5f;
-
         /// <summary>
-        /// Maximum time to keep audio in buffer before discarding it
+        /// If no new frame arrives for longer than this, stop playback (seconds).
         /// </summary>
         public float FrameLifetime {
             get => frameLifetime;
             set => frameLifetime = value;
         }
 
-        [Tooltip("The multiplier for the buffer length")]
+        [Tooltip("How large the internal ring buffer is, relative to (targetLatency + frameLifetime).")]
         [SerializeField] int bufferFactor = 4;
-
         /// <summary>
-        /// The multiplier for the buffer length. 
+        /// How large the internal ring buffer is, relative to (targetLatency + frameLifetime).
         /// </summary>
         public int BufferFactor {
             get => bufferFactor;
             set => bufferFactor = value;
         }
 
-        [Tooltip("Proportional gain for pitch correction (per second of latency error).")]
-        [Range(0f, 10f)]
+        [Header("Pitch controller")]
+        [Tooltip("P gain: pitch response per second of latency error.")]
+        [Range(0f, 5f)]
         [SerializeField] float pitchProportionalGain = 1f;
-
         /// <summary>
-        /// Controls how aggressively pitch is adjusted to reach target latency
+        /// P gain: pitch response per second of latency error.
         /// </summary>
-        public float PitchProportionalGame {
+        public float PitchProportionalGain {
             get => pitchProportionalGain;
             set => pitchProportionalGain = value;
         }
 
-        [Tooltip("Maximum pitch adjustment (as a percentage).")]
+        [Tooltip("Maximum absolute pitch deviation.")]
         [Range(0f, 0.5f)]
-        [SerializeField] float pitchMaxCorrection = 0.15f;
-
+        [SerializeField] float pitchMaxCorrection = 0.2f;
         /// <summary>
-        /// Caps pitch adjustment so audio doesn't sound unnatural
+        /// Maximum absolute pitch deviation.
         /// </summary>
         public float PitchMaxCorrection {
             get => pitchMaxCorrection;
             set => pitchMaxCorrection = value;
         }
 
+        [Tooltip("Scale for downward (pitch < 1) correction.")]
+        [Range(0f, 1.0f)]
+        [SerializeField] float downwardPitchCorrectionScale = 0.25f;
+        /// <summary>
+        /// Scale for downward (pitch < 1) correction.
+        /// </summary>
+        public float DownwardPitchCorrectionScale {
+            get => downwardPitchCorrectionScale;
+            set => downwardPitchCorrectionScale = value;
+        }
+
+        [Tooltip("No pitch adjustment if |error| <= deadzone (seconds).")]
+        [Range(0f, 0.05f)]
+        [SerializeField] float pitchDeadzoneSec = 0.025f;
+        /// <summary>
+        /// No pitch adjustment if |error| <= deadzone (seconds).
+        /// </summary>
+        public float PitchDeadZoneSec {
+            get => pitchDeadzoneSec;
+            set => pitchDeadzoneSec = value;
+        }
+
+        [Tooltip("How fast pitch drifts back to 1.0 when within the deadzone.")]
+        [Range(0f, 2f)]
+        [SerializeField] float pitchReturnSpeed = 0.5f;
+        /// <summary>
+        /// How fast pitch drifts back to 1.0 when within the deadzone.
+        /// </summary>
+        public float PitchReturnSpeed {
+            get => pitchReturnSpeed;
+            set => pitchReturnSpeed = value;
+        }
+
+        [Header("Startup")]
+        [Tooltip("Extra safety buffer on first start (seconds). Prevents razor-edge starts.")]
+        [Range(0f, 0.1f)]
+        [SerializeField] float startSafetyMarginSec = 0.02f;
+        /// <summary>
+        /// Extra safety buffer on first start (seconds). Prevents razor-edge starts.
+        /// </summary>
+        public float StartSafetyMarginSec {
+            get => startSafetyMarginSec;
+            set => startSafetyMarginSec = value;
+        }
+
+        /// <summary>
+        /// The <see cref="AudioSource"/> that plays the streaming audio
+        /// </summary>
+        public AudioSource UnityAudioSource {
+            get {
+                if (source == null) {
+                    source = GetComponent<AudioSource>();
+                    source.loop = true;
+                    source.playOnAwake = false;
+                    source.dopplerLevel = 0f;
+                }
+                return source;
+            }
+        }
+        
         /// <summary>
         /// The length of the internal buffer in milliseconds
         /// </summary>
-        public int BufferDurationMS =>
-            clip != null ? clip.samples * 1000 / clip.channels / clip.frequency : 0;
+        public int BufferDurationMS => clip != null ? clip.samples * 1000 / clip.frequency : 0;
 
         /// <summary>
         /// Current clip's sample rate
@@ -88,184 +143,211 @@ namespace Adrenak.UniMic {
         /// </summary>
         public bool IsBuffering { get; private set; }
 
-        /// <summary>
-        /// Accessor for AudioSource with lazy initialization and setup
-        /// </summary>
-        public AudioSource UnityAudioSource {
-            get {
-                if (source == null) {
-                    source = GetComponent<AudioSource>();
-                    source.loop = true;
-                    source.playOnAwake = false;
-                    source.dopplerLevel = 0;
-                }
-                return source;
-            }
-        }
-
+        #region INTERNAL STATE
         private AudioSource source;
         private AudioClip clip;
 
-        // Buffering and frame tracking variables
-        private int estimatedClipSamples;
-        private int samplesPerFrame;
-        private float secondsPerFrame;
+        // Current format
+        private int curFrequency = 0;
+        private int curChannels = 0;
 
-        // Write pointer and playback tracking
-        private int setDataPos;
-        private long absSetDataPos;
-        private int playbackLoops;
-        private int lastPlaybackPos;
-        private int absPlaybackPos;
+        // Ring buffer geometry (PER-CHANNEL samples)
+        private int samplesPerChannel = 0;
+        private float clipLengthSec = 0f;
 
-        // Timer for frame lifetime checks
+        // Write pointers/counters
+        private int writePosPerChannel = 0;
+        private long absWritePerChannel = 0;
+
+        // Frame geometry (computed at each Feed)
+        private int perChannelSamplesInFrame = 0;
+        private float secondsPerFrame = 0f;
+
+        // Frame staleness tracking
         private readonly Stopwatch frameStopwatch = new Stopwatch();
         private float TimeSinceLastFrame => (float)frameStopwatch.Elapsed.TotalSeconds;
-        private static readonly object audioWriteLock = new object();
 
-        [System.Obsolete("new not allowed. Use StreamedAudioSource.New", true)]
-        public StreamedAudioSource() { }
+        private static readonly object audioWriteLock = new object();
+        #endregion
 
         public static StreamedAudioSource New(string name = null) {
             var go = new GameObject(name ?? "StreamedAudioSource");
             go.hideFlags = HideFlags.DontSave;
             DontDestroyOnLoad(go);
-            var instance = go.AddComponent<StreamedAudioSource>();
-            return instance;
+            return go.AddComponent<StreamedAudioSource>();
         }
 
         /// <summary>
-        /// Feeds audio into the buffer. Reinitializes format if it changes.
-        /// Starts playback when target latency is reached.
+        /// Feed one frame of interleaved audio (float PCM).
+        /// - frequency: Hz of this frame
+        /// - channels: channel count of this frame
+        /// - samples: interleaved samples (length = perChSamplesInFrame * channels)
         /// </summary>
         public void Feed(int frequency, int channels, float[] samples) {
             if (!gameObject.activeInHierarchy) return;
             if (!UnityAudioSource.enabled) return;
+            if (samples == null || samples.Length == 0) return;
 
-            estimatedClipSamples = Mathf.CeilToInt((targetLatency + frameLifetime) * bufferFactor * frequency);
-            samplesPerFrame = samples.Length;
-            secondsPerFrame = (float)samplesPerFrame / frequency;
+            // Frame geometry (channel-aware)
+            int totalInFrame = samples.Length;
+            perChannelSamplesInFrame = totalInFrame / channels;
+            secondsPerFrame = (float)perChannelSamplesInFrame / frequency;
 
-            // Reinitialize the clip if format or size has changed
-            if (frequency != SamplingFrequency || channels != ChannelCount || clip == null || clip.samples != estimatedClipSamples) {
+            // Desired clip size (per-channel samples)
+            int desiredClipSamplesPerCh = Mathf.CeilToInt(
+                (targetLatency + frameLifetime) * bufferFactor * frequency
+            );
+
+            bool formatChanged = clip == null
+                || frequency != curFrequency
+                || channels != curChannels
+                || desiredClipSamplesPerCh != samplesPerChannel;
+
+            if (formatChanged) {
                 StopPlayback();
-                ReinitClip(estimatedClipSamples, channels, frequency);
+                ReinitClip(desiredClipSamplesPerCh, channels, frequency);
             }
 
-            // Write samples into ring buffer
+            // Write the frame into the ring (SetData offset is per-channel samples)
             lock (audioWriteLock) {
-                clip.SetData(samples, setDataPos);
+                clip.SetData(samples, writePosPerChannel);
             }
 
-            absSetDataPos += samples.Length;
-            setDataPos = (int)(absSetDataPos % clip.samples);
+            // Advance write pointers
+            absWritePerChannel += perChannelSamplesInFrame;
+            writePosPerChannel = (writePosPerChannel + perChannelSamplesInFrame) % samplesPerChannel;
             frameStopwatch.Restart();
 
-            // Compute buffered duration in seconds
-            float bufferedTimeInSeconds = (float)absSetDataPos / (frequency * channels);
-            if (!IsPlaying)
+            // Startup: begin only when enough audio is prebuffered
+            if (!IsPlaying) {
                 IsBuffering = true;
 
-            // Start playback once sufficient buffer is accumulated
-            if (bufferedTimeInSeconds >= targetLatency && !IsPlaying) {
-                UnityAudioSource.time = GetWrappedTime((int)(absSetDataPos / samplesPerFrame) - 1);
-                IsBuffering = false;
-                UnityAudioSource.Play();
+                // Total written duration (sec) from zero; fine for first start
+                float writtenSec = (float)absWritePerChannel / curFrequency;
+                if (writtenSec >= targetLatency + startSafetyMarginSec) {
+                    // CHANGE: Start EXACTLY at target latency behind the write head
+                    float writeTimeSec = WrappedWriteTimeSec();
+                    float desiredReadSec = writeTimeSec - targetLatency;
+                    if (desiredReadSec < 0f) desiredReadSec += clipLengthSec;
+
+                    UnityAudioSource.time = desiredReadSec;
+                    UnityAudioSource.pitch = 1f;
+                    UnityAudioSource.Play();
+
+                    IsBuffering = false;
+                }
             }
         }
 
-        /// <summary>
-        /// Monitors playback position, latency, and handles underruns or staleness.
-        /// </summary>
         private void Update() {
-            if (!IsPlaying) return;
+            if (!IsPlaying || clip == null) return;
 
-            // Track playback loop and update absolute position
-            int currentSamplePos = UnityAudioSource.timeSamples;
-            if (currentSamplePos < lastPlaybackPos) playbackLoops++;
-            lastPlaybackPos = currentSamplePos;
-            absPlaybackPos = playbackLoops * clip.samples + currentSamplePos;
-
-            // Stop playback if it catches up to write position
-            if (absPlaybackPos > absSetDataPos) {
+            // Stale frame protection
+            if (TimeSinceLastFrame > frameLifetime) {
                 StopPlayback();
                 return;
             }
 
-            // Apply pitch correction to reach target latency
-            float latency = GetLatency();
-            float error = targetLatency - latency;
-            float response = Mathf.Clamp(-error * pitchProportionalGain, -pitchMaxCorrection, pitchMaxCorrection);
-            UnityAudioSource.pitch = 1f + response;
+            // Compute current latency (seconds) with simple wrap math
+            float latencySec = CurrentLatencySec();
 
-            // Stop playback if frame data becomes stale
-            if (TimeSinceLastFrame > frameLifetime) {
+            // If dangerously low latency, treat as underrun and stop (will restart on next feeds)
+            if (latencySec < 0.5f * secondsPerFrame) {
                 StopPlayback();
+                return;
+            }
+
+            // Proportional-only controller
+            // error > 0 -> we are SHORT of target -> need to SLOW playback -> pitch < 1
+            float errorSec = targetLatency - latencySec;
+
+            if (Mathf.Abs(errorSec) <= pitchDeadzoneSec) {
+                // Within the deadzone: gently relax pitch back to 1.0
+                UnityAudioSource.pitch = Mathf.MoveTowards(
+                    UnityAudioSource.pitch, 1f, pitchReturnSpeed * Time.deltaTime
+                );
+            }
+            else {
+                // sign: short => negative; long => positive
+                float raw = -errorSec * pitchProportionalGain;
+
+                // Asymmetric clamp: prefer speeding up (pitch>1) over slowing down (pitch<1)
+                float minResp = -pitchMaxCorrection * downwardPitchCorrectionScale;
+                float maxResp = pitchMaxCorrection;
+                float resp = Mathf.Clamp(raw, minResp, maxResp);
+                UnityAudioSource.pitch = 1f + resp;
             }
         }
 
-        /// <summary>
-        /// Computes playback latency with circular buffer wraparound handling.
-        /// </summary>
-        private float GetLatency() {
-            float writeTime = GetWrappedTime((int)(absSetDataPos / samplesPerFrame));
-            float readTime = UnityAudioSource.time;
-            float clipLength = clip.length;
+        #region HELPERS
+        private float WrappedWriteTimeSec() {
+            // Position of write head (per-channel) mapped to seconds in [0, clipLengthSec)
+            int writePosWrapped = (int)(absWritePerChannel % samplesPerChannel);
+            float writeTimeSec = (float)writePosWrapped / curFrequency;
+            return writeTimeSec;
+        }
+
+        private float CurrentLatencySec() {
+            // Latency = time distance from read head to write head (wrapped)
+            float writeTime = WrappedWriteTimeSec();
+            float readTime = UnityAudioSource.time; // seconds in [0, clipLengthSec)
 
             float latency = writeTime - readTime;
-            if (latency < 0) latency += clipLength;
-            if (clipLength - frameLifetime < latency) latency -= clipLength;
-
-            return latency + TimeSinceLastFrame;
+            if (latency < 0f) latency += clipLengthSec; // wrap into [0, clipLengthSec)
+            return latency;
         }
 
-        /// <summary>
-        /// Converts frame index to playback time, wrapped around clip length.
-        /// </summary>
-        private float GetWrappedTime(int frameIndex) {
-            return frameIndex * secondsPerFrame % clip.length;
-        }
-
-        /// <summary>
-        /// Resets all state and stops playback.
-        /// </summary>
         private void StopPlayback() {
             IsBuffering = false;
-            setDataPos = 0;
-            absSetDataPos = 0;
-            playbackLoops = 0;
-            lastPlaybackPos = 0;
-            absPlaybackPos = 0;
+            writePosPerChannel = 0;
+            absWritePerChannel = 0;
+            UnityAudioSource.pitch = 1f;
             UnityAudioSource.Stop();
+            frameStopwatch.Reset();
         }
 
-        /// <summary>
-        /// Recreates the audio clip with new format settings.
-        /// </summary>
-        private void ReinitClip(int sampleLen, int channels, int frequency) {
+        private void ReinitClip(int sampleLenPerCh, int channels, int frequency) {
             DestroyClip();
-            CreateClip(sampleLen, channels, frequency);
+            CreateClip(sampleLenPerCh, channels, frequency);
         }
 
-        /// <summary>
-        /// Destroys the current audio clip.
-        /// </summary>
         private void DestroyClip() {
-            if (clip != null)
-                Destroy(clip);
+            if (clip != null) Destroy(clip);
             clip = null;
         }
 
-        /// <summary>
-        /// Creates a new silent audio clip and assigns it to the AudioSource.
-        /// </summary>
-        private void CreateClip(int sampleLen, int channels, int frequency) {
-            clip = AudioClip.Create("StreamedClip", sampleLen, channels, frequency, false);
-            clip.SetData(new float[sampleLen], 0);
+        private void CreateClip(int sampleLenPerCh, int channels, int frequency) {
+            clip = AudioClip.Create("StreamedClip", sampleLenPerCh, channels, frequency, false);
+
+            // Init clip with silence
+            var zeros = new float[sampleLenPerCh * channels];
+            clip.SetData(zeros, 0);
+
             UnityAudioSource.clip = clip;
+
+            // Update cached geometry
+            samplesPerChannel = sampleLenPerCh;                  // per-channel samples
+            clipLengthSec = (float)samplesPerChannel / frequency;
+
+            curFrequency = frequency;
+            curChannels = channels;
+
+            // Reset write pointers
+            writePosPerChannel = 0;
+            absWritePerChannel = 0;
         }
+        #endregion
 
         #region OBSOLETE
+
+        [System.Obsolete("new not allowed. Use StreamedAudioSource.New", true)]
+        public StreamedAudioSource() { }
+
+        [System.Obsolete("Use PitchProportionalGain instead. This property was a typo!")]
+        public float PitchProportionalGame {
+            get => PitchProportionalGain;
+            set => PitchProportionalGame = value;
+        }
 
         [System.Obsolete("FrameCountForPlay is no longer supported. Use targetLatency instead to configure buffer size.")]
         public int FrameCountForPlay { get; set; }
