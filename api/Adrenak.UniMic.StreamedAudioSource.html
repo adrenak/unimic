@@ -141,7 +141,7 @@ public StreamedAudioSource()</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_BufferFactor_" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_BufferFactor" data-uid="Adrenak.UniMic.StreamedAudioSource.BufferFactor">BufferFactor</h4>
-  <div class="markdown level1 summary"><p>The multiplier for the buffer length. </p>
+  <div class="markdown level1 summary"><p>How large the internal ring buffer is, relative to (targetLatency + frameLifetime).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -217,6 +217,31 @@ public bool Buffering { get; }</code></pre>
   </table>
   
   
+  <a id="Adrenak_UniMic_StreamedAudioSource_DownwardPitchCorrectionScale_" data-uid="Adrenak.UniMic.StreamedAudioSource.DownwardPitchCorrectionScale*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_DownwardPitchCorrectionScale" data-uid="Adrenak.UniMic.StreamedAudioSource.DownwardPitchCorrectionScale">DownwardPitchCorrectionScale</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float DownwardPitchCorrectionScale { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay_" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_FrameCountForPlay" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameCountForPlay">FrameCountForPlay</h4>
   <div class="markdown level1 summary"></div>
@@ -245,7 +270,7 @@ public int FrameCountForPlay { get; set; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_FrameLifetime_" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameLifetime*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_FrameLifetime" data-uid="Adrenak.UniMic.StreamedAudioSource.FrameLifetime">FrameLifetime</h4>
-  <div class="markdown level1 summary"><p>Maximum time to keep audio in buffer before discarding it</p>
+  <div class="markdown level1 summary"><p>If no new frame arrives for longer than this, stop playback (seconds).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -321,9 +346,34 @@ public int FrameCountForPlay { get; set; }</code></pre>
   </table>
   
   
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchDeadZoneSec_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchDeadZoneSec*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchDeadZoneSec" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchDeadZoneSec">PitchDeadZoneSec</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float PitchDeadZoneSec { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchMaxCorrection" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchMaxCorrection">PitchMaxCorrection</h4>
-  <div class="markdown level1 summary"><p>Caps pitch adjustment so audio doesn&apos;t sound unnatural</p>
+  <div class="markdown level1 summary"><p>Maximum absolute pitch deviation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -347,14 +397,66 @@ public int FrameCountForPlay { get; set; }</code></pre>
   </table>
   
   
-  <a id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame*"></a>
-  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame">PitchProportionalGame</h4>
-  <div class="markdown level1 summary"><p>Controls how aggressively pitch is adjusted to reach target latency</p>
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGain_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGain*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGain" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGain">PitchProportionalGain</h4>
+  <div class="markdown level1 summary"><p>P gain: pitch response per second of latency error.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public float PitchProportionalGame { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public float PitchProportionalGain { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchProportionalGame" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchProportionalGame">PitchProportionalGame</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Use PitchProportionalGain instead. This property was a typo!&quot;)]
+public float PitchProportionalGame { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
+  <a id="Adrenak_UniMic_StreamedAudioSource_PitchReturnSpeed_" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchReturnSpeed*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_PitchReturnSpeed" data-uid="Adrenak.UniMic.StreamedAudioSource.PitchReturnSpeed">PitchReturnSpeed</h4>
+  <div class="markdown level1 summary"><p>How fast pitch drifts back to 1.0 when within the deadzone.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float PitchReturnSpeed { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-striped table-condensed">
@@ -399,9 +501,35 @@ public int FrameCountForPlay { get; set; }</code></pre>
   </table>
   
   
+  <a id="Adrenak_UniMic_StreamedAudioSource_StartSafetyMarginSec_" data-uid="Adrenak.UniMic.StreamedAudioSource.StartSafetyMarginSec*"></a>
+  <h4 id="Adrenak_UniMic_StreamedAudioSource_StartSafetyMarginSec" data-uid="Adrenak.UniMic.StreamedAudioSource.StartSafetyMarginSec">StartSafetyMarginSec</h4>
+  <div class="markdown level1 summary"><p>Extra safety buffer on first start (seconds). Prevents razor-edge starts.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public float StartSafetyMarginSec { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Single</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  
+  
   <a id="Adrenak_UniMic_StreamedAudioSource_TargetLatency_" data-uid="Adrenak.UniMic.StreamedAudioSource.TargetLatency*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_TargetLatency" data-uid="Adrenak.UniMic.StreamedAudioSource.TargetLatency">TargetLatency</h4>
-  <div class="markdown level1 summary"><p>Target delay between receiving and playing audio</p>
+  <div class="markdown level1 summary"><p>Desired steady-state playback latency (seconds).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -427,7 +555,7 @@ public int FrameCountForPlay { get; set; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_UnityAudioSource_" data-uid="Adrenak.UniMic.StreamedAudioSource.UnityAudioSource*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_UnityAudioSource" data-uid="Adrenak.UniMic.StreamedAudioSource.UnityAudioSource">UnityAudioSource</h4>
-  <div class="markdown level1 summary"><p>Accessor for AudioSource with lazy initialization and setup</p>
+  <div class="markdown level1 summary"><p>The <see cref="!:AudioSource"></see> that plays the streaming audio</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
@@ -455,8 +583,12 @@ public int FrameCountForPlay { get; set; }</code></pre>
   
   <a id="Adrenak_UniMic_StreamedAudioSource_Feed_" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed*"></a>
   <h4 id="Adrenak_UniMic_StreamedAudioSource_Feed_System_Int32_System_Int32_System_Single___" data-uid="Adrenak.UniMic.StreamedAudioSource.Feed(System.Int32,System.Int32,System.Single[])">Feed(Int32, Int32, Single[])</h4>
-  <div class="markdown level1 summary"><p>Feeds audio into the buffer. Reinitializes format if it changes.
-Starts playback when target latency is reached.</p>
+  <div class="markdown level1 summary"><p>Feed one frame of interleaved audio (float PCM).</p>
+<ul>
+<li>frequency: Hz of this frame</li>
+<li>channels: channel count of this frame</li>
+<li>samples: interleaved samples (length = perChSamplesInFrame * channels)</li>
+</ul>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="decalaration">Declaration</h5>
